@@ -13,9 +13,11 @@ Scaffold a brand-new project from the bundled framework template, then get it to
 ## Inputs
 
 - **Project name:** `$ARGUMENTS` (e.g. `Acme CRM`). If empty, ask for it before doing anything else.
-- **Template source (always copy from here, never edit it):** `${CLAUDE_PLUGIN_ROOT}/skills/new-project/claude-project-template`
-  Claude Code expands `${CLAUDE_PLUGIN_ROOT}` to this plugin's install folder, so the template travels with the plugin on any machine. Copying at runtime is the whole point — every new project inherits whatever the template currently contains, so framework updates propagate automatically. **Never edit the template here; only read/copy from it.**
-  > If `${CLAUDE_PLUGIN_ROOT}` is not already expanded to a real path, resolve it with `echo $CLAUDE_PLUGIN_ROOT`, or find the `claude-project-template` folder sitting next to this SKILL.md.
+- **Template source (always copy from here, never edit it):** the `claude-project-template/` folder bundled **inside this skill's own directory** (the folder that contains this SKILL.md). This works the same in Claude Code and in Codex — only the way you resolve the skill's directory differs:
+  - **Claude Code:** the skill directory is `${CLAUDE_PLUGIN_ROOT}/skills/new-project`, so the template is `${CLAUDE_PLUGIN_ROOT}/skills/new-project/claude-project-template`.
+  - **Codex:** set `SKILL_DIR` to the absolute path of the directory containing this SKILL.md, so the template is `$SKILL_DIR/claude-project-template`.
+
+  The template travels with the plugin on any machine, so every new project inherits whatever it currently contains — framework updates propagate automatically. **Never edit the bundled template; only read/copy from it.**
 - **Destination:** Ask the operator each run — there is no default. (See step 1.)
 
 > Paths may contain spaces or apostrophes. **Always wrap every path in double quotes** in bash.
@@ -26,9 +28,13 @@ Scaffold a brand-new project from the bundled framework template, then get it to
 
 2. **Safety check — never overwrite.** Run `test -d "<destination>" && ls -A "<destination>"`. If the folder already exists and is non-empty, STOP and tell the operator; offer a different name or location. Only proceed when the destination is absent or empty.
 
-3. **Copy the bundled template.**
+3. **Copy the bundled template.** First resolve this skill's own directory into `SKILL_DIR`:
+   - **Claude Code:** `SKILL_DIR="${CLAUDE_PLUGIN_ROOT}/skills/new-project"`
+   - **Codex:** set `SKILL_DIR` to the absolute path of the folder that contains this SKILL.md (the same folder this file lives in).
+
+   Then copy:
    ```
-   TEMPLATE="${CLAUDE_PLUGIN_ROOT}/skills/new-project/claude-project-template"
+   TEMPLATE="$SKILL_DIR/claude-project-template"
    mkdir -p "<destination>"
    cp -R "$TEMPLATE/." "<destination>/"
    rm -f "<destination>/.DS_Store"

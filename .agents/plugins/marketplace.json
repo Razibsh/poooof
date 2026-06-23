@@ -1,0 +1,13 @@
+{
+  "name": "poooof",
+  "plugins": [
+    {
+      "name": "new-project",
+      "source": {
+        "source": "local",
+        "path": "./plugins/new-project"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

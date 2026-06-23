@@ -25,14 +25,25 @@ It asks for a project name and where to create it, copies the template, sets up 
 
 ## Stay up to date
 
-When the framework gets improved, pull the latest with:
+There are two ways to get new versions. Because this plugin tracks the repo directly (no pinned version), **every push to GitHub becomes the new version automatically** — the only question is whether you pull it manually or let Claude Code do it.
+
+**Option A — manual (default).** Whenever you want the latest, run:
 
 ```
 /plugin marketplace update poooof
 /plugin update new-project@poooof
 ```
 
-Because this plugin tracks the repo directly (no pinned version), every push to GitHub becomes the new version automatically.
+**Option B — automatic (set once, recommended).** Turn on auto-update for this marketplace and Claude Code will fetch + install new versions for you on startup:
+
+1. Run `/plugin`
+2. Open the **Marketplaces** tab
+3. Select **poooof**
+4. Choose **Enable auto-update**
+
+After that, each time you start Claude Code it pulls the latest Poooof and shows a small prompt to run `/reload-plugins` to activate it. No more manual checking.
+
+> Note: updates arrive at **startup** (Option B) or **on demand** (Option A) — there's no mid-session "update available" popup.
 
 ## What's inside
 
