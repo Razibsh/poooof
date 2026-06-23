@@ -1,0 +1,13 @@
+{
+  "name": "new-project",
+  "displayName": "Poooof — New Project",
+  "description": "Scaffold a brand-new project from a reusable framework template, then get it to 'ready to build Phase 1'. Copies the bundled template (so every project inherits the latest framework), git-inits, optionally creates a GitHub repo, then interviews to fill in CLAUDE.md and draft a Phase 1 roadmap.",
+  "author": {
+    "name": "Razibsh",
+    "email": "shyfttothetop@gmail.com"
+  },
+  "homepage": "https://github.com/Razibsh/poooof",
+  "repository": "https://github.com/Razibsh/poooof",
+  "license": "MIT",
+  "keywords": ["scaffold", "template", "project-setup", "framework", "bootstrap"]
+}

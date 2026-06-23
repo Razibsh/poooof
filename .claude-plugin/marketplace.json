@@ -1,0 +1,14 @@
+{
+  "name": "poooof",
+  "owner": {
+    "name": "Razibsh",
+    "email": "shyfttothetop@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "new-project",
+      "source": "./plugins/new-project",
+      "description": "Scaffold a brand-new project from a reusable framework template: copies the bundled template, git-inits, optionally creates a GitHub repo, then interviews to fill in CLAUDE.md and draft a Phase 1 roadmap."
+    }
+  ]
+}
