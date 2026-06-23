@@ -94,6 +94,52 @@ every PR. Then "are the tests green?" is answered for you, not something anyone 
 
 ---
 
+## Working in parallel — give each task its own folder (worktrees)
+
+Everything above assumes **one task at a time** — the simple default: one branch, one folder.
+But sometimes you want **two or three things going at once** (e.g. two Claude chats open, each
+building a different feature). If they share one folder they'll trip over each other — a folder
+can only be on one branch at a time, so both chats end up piling onto the *same* branch. The fix
+is a **worktree**.
+
+**A worktree is just another folder holding the same project, locked to its own branch.** Same
+project history underneath; separate folders on top. One chat per folder = they physically can't
+collide.
+
+```
+yourproject/              → branch: main          (home base)
+yourproject-trees/
+   ├─ feature-a/          → branch: feature/a      (chat 1 works here)
+   └─ feature-b/          → branch: feature/b      (chat 2 works here)
+```
+
+Three commands — your agent runs these for you, you don't have to memorize them:
+
+```
+# CREATE a worktree (new folder + new branch off the latest main)
+git worktree add ../yourproject-trees/feature-a -b feature/a main
+
+# USE it: open a new Claude Code / editor window in that folder and work normally.
+#         Commit, push, and open a PR from inside it — exactly like any branch.
+
+# REMOVE it once the feature is merged (deletes the folder safely)
+git worktree remove ../yourproject-trees/feature-a
+```
+
+Golden rules (mostly enforced by git, so they're hard to get wrong):
+- **One branch per worktree.** Git won't let the same branch be open in two folders.
+- **Never delete a worktree folder by hand in Finder** — always `git worktree remove`, so git's
+  bookkeeping stays clean.
+- **Start each worktree from a fresh `main`** (the command above does), so features don't inherit
+  each other's half-done work.
+
+**When to bother:** only when you're genuinely running 2+ tasks at the same moment. One thing at a
+time — even across different days — is simpler as a plain branch. Your agent applies this rule for
+you (see `CLAUDE.md`): if you ask it to start a second task while one's already in flight, it offers
+to set up a worktree instead of piling onto the current branch.
+
+---
+
 ## How the agents fit in
 
 - **Shared rules:** `CLAUDE.md` (and its `AGENTS.md` symlink) are committed, so every agent —

@@ -48,6 +48,12 @@ If more than one person or AI agent will touch this repo, read `TEAM-WORKFLOW.md
 never commit straight to `main`; one branch per task; one agent per branch at a time; small frequent
 merges; every change goes through a pull request before it reaches `main`.
 
+**Parallel-work rule (apply automatically):** before starting a new task, check whether work is
+already in progress here (uncommitted changes, or the operator is opening a *second* task while a
+first is unfinished). If so, don't pile onto the current branch — offer to set up a `git worktree`
+so each task gets its own folder and they can't collide. One task at a time needs no worktree; just
+branch normally. See `TEAM-WORKFLOW.md` → "Working in parallel".
+
 ## Reference material & feature specs (conventions)
 
 - **`Ref/` is the read-only source of product truth.** If the project has research, a spec, an
