@@ -9,6 +9,11 @@
       "name": "new-project",
       "source": "./plugins/new-project",
       "description": "Scaffold a brand-new project from a reusable framework template: copies the bundled template, git-inits, optionally creates a GitHub repo, then interviews to fill in CLAUDE.md and draft a Phase 1 roadmap."
+    },
+    {
+      "name": "workstream",
+      "source": "./plugins/workstream",
+      "description": "Run multiple features in parallel safely: start-stream + finish-stream manage worktrees, STATUS.md, WORKSTREAMS.md, and the merge/cleanup lifecycle."
     }
   ]
 }
