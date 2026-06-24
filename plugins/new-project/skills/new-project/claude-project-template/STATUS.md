@@ -1,10 +1,11 @@
 # Status — session handoff
 
-> The committed home for the end-of-session status block (CLAUDE.md rule #8). One file, always
-> overwritten with the *latest* state — not an append-only log. The point: anyone (you tomorrow,
-> a teammate, another agent) can pull the repo and know exactly where things stand without reading
-> chat history or relying on an agent "remembering". If this file and `git log` ever disagree,
-> reconcile them before doing anything else.
+> The committed handoff for **this stream** (this worktree/branch). Two halves: the **current-state**
+> blocks below are *overwritten* every session so they always show where the stream stands; the
+> **Decision log** at the bottom is *append-only* — never erase it. Anyone (you tomorrow, a teammate,
+> Codex, another agent) can pull the branch and know exactly where things stand and *why*, without chat
+> history. Because each stream has its own branch, two sessions never overwrite each other's STATUS.md.
+> If this file and `git log` disagree, reconcile before doing anything else.
 
 **Last updated:** YYYY-MM-DD — <session one-liner>
 
@@ -27,3 +28,9 @@
 ## Docs in sync?
 > Confirm ROADMAP/DECISIONS/BACKLOG reflect reality as of this commit. (yes / what's stale)
 -
+
+## Decision log (append-only — never erase)
+> Every meaningful decision in THIS stream, newest at the bottom, each with a one-line "why". The agent
+> appends here automatically as decisions happen — you never have to ask. On merge, the locked /
+> cross-cutting decisions get promoted into the project `DECISIONS.md`.
+- YYYY-MM-DD — <decision> — <why>
