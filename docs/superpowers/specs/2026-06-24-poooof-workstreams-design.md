@@ -170,10 +170,17 @@ Then, separately: **backport to WhatsBot-v2** — convert it to the bare-repo la
 - Any server/daemon to "watch" sessions — git + the dashboard file are the coordination mechanism.
 - Auto-merge without review — `finish-stream` still goes through the project's PR/merge setting.
 
-## Open implementation questions for the plan
+## Resolved with the operator
+
+- **Skills location:** a **new `workstream` plugin in the same `poooof` marketplace** (separate from
+  `new-project`). Rationale: `new-project` *creates* a project (one-time); `workstream` *drives* an existing one
+  (ongoing) — single-purpose plugins, clean command names (`workstream:start-stream`, `workstream:finish-stream`),
+  one marketplace the operator already has installed.
+- **Merge style:** `finish-stream` **defaults to a PR** (review + test gate before `main` — the safe path). A
+  project may opt into fast-forward. `finish-stream` asks once per project ("PR with a safety check, or straight to
+  main?") and records the choice (a small per-project setting, e.g. a `merge_style` key) so it isn't re-asked.
+
+## Open implementation question for the plan
 
 - Exact bare-repo init sequence that yields a clean `main/` worktree with the first commit (orphan-branch vs
-  `git init --bare` + first `worktree add`).
-- Whether `start-stream`/`finish-stream` live in the existing `new-project` plugin or a new `workstream` plugin in
-  the same marketplace (affects install but not behavior).
-- How `finish-stream` decides PR-merge vs fast-forward (project setting vs ask).
+  `git init --bare` + first `worktree add`). To be settled in the plan with a tested command sequence.
