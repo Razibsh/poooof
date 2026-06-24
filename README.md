@@ -84,6 +84,33 @@ poooof/
 
 Both tools read the **same** `skills/new-project/` folder and the **same** template — one source of truth. The command resolves the template path per tool (`${CLAUDE_PLUGIN_ROOT}` in Claude Code, the skill's own directory in Codex).
 
+## Workstreams — build several features in parallel
+
+The `workstream` plugin lets one person drive 3–6 agent sessions at once (Claude + Codex) without losing
+track of anything. A project uses a **bare-repo layout** — one folder per branch:
+
+    ProjectName/
+    ├── .bare/      ← git engine (hidden)
+    ├── main/       ← the live branch
+    └── <stream>/   ← one folder per parallel feature
+
+Two commands run the whole lifecycle (no git knowledge needed):
+
+- `workstream:start-stream <name>` — creates the stream's folder + branch off the latest `main`, seeds its
+  `STATUS.md`, and registers it in `WORKSTREAMS.md`.
+- `workstream:finish-stream [name]` — merges it (PR by default), promotes its decisions into `DECISIONS.md`,
+  and cleans up the folder + branch + dashboard row.
+
+`WORKSTREAMS.md` (on `main`) is the dashboard of what's in flight and who owns each stream — every agent reads
+it first, so two sessions never collide. See a scaffolded project's `TEAM-WORKFLOW.md` for the full guide.
+
+**Install (alongside new-project, same marketplace):**
+
+```
+/plugin marketplace add Razibsh/poooof   # if not already added
+/plugin install workstream@poooof
+```
+
 ## For the author — how to improve the framework
 
 This repo is the single source of truth (the "workshop"). To change the template or the command:
