@@ -20,7 +20,9 @@
 
 ## Development workflow (follow this strictly)
 
-1. **Start of every session:** read `ROADMAP.md` first. Work ONLY on the current phase.
+1. **Start of every session:** read `WORKSTREAMS.md` first (what parallel streams are in flight + who owns
+   them). If you're in a stream worktree, read that stream's `STATUS.md` next (where it stands). Then read
+   `ROADMAP.md` and work ONLY on the current phase of the stream you own.
 2. **Idea capture is automatic and unprompted:** whenever the operator mentions an idea, wish,
    or future feature in conversation — even casually, even mid-task — append it to `BACKLOG.md`
    immediately (one line + date) and say it's captured. They should never have to say "note this".
@@ -41,6 +43,10 @@
    that docs are updated. `STATUS.md` is committed, so it travels to teammates and survives lost chat
    history. If a session ends abruptly, the first action next session is to reconcile `STATUS.md` and
    the docs with `git log` and reality.
+9. **Log decisions as they happen.** Whenever a meaningful choice is made (an approach picked, a tradeoff
+   settled, a constraint discovered), append one dated line to the `## Decision log` in the current stream's
+   `STATUS.md` — automatically, without being asked. On merge, promote the locked/cross-cutting ones into
+   `DECISIONS.md`. Nothing important should live only in the chat.
 
 ## Working with other agents / a teammate
 
@@ -48,11 +54,13 @@ If more than one person or AI agent will touch this repo, read `TEAM-WORKFLOW.md
 never commit straight to `main`; one branch per task; one agent per branch at a time; small frequent
 merges; every change goes through a pull request before it reaches `main`.
 
-**Parallel-work rule (apply automatically):** before starting a new task, check whether work is
-already in progress here (uncommitted changes, or the operator is opening a *second* task while a
-first is unfinished). If so, don't pile onto the current branch — offer to set up a `git worktree`
-so each task gets its own folder and they can't collide. One task at a time needs no worktree; just
-branch normally. See `TEAM-WORKFLOW.md` → "Working in parallel".
+**Parallel-work rule (apply automatically):** before starting a new task, check `WORKSTREAMS.md` and whether
+work is already in progress (uncommitted changes, or the operator opening a *second* task while a first is
+unfinished). If a new task would run in parallel, don't pile onto the current branch — say so and propose a
+worktree: *"this is a new parallel stream — I'll run `workstream:start-stream <name>`, ok?"* and wait for a
+yes (confirm-first). One task at a time needs no worktree — just branch normally. When a stream is done and
+merged, run `workstream:finish-stream` to clean up. The bare-repo layout, the two skills, and the
+`WORKSTREAMS.md` dashboard are described in `TEAM-WORKFLOW.md` → "Working in parallel".
 
 ## Reference material & feature specs (conventions)
 
@@ -82,6 +90,7 @@ branch normally. See `TEAM-WORKFLOW.md` → "Working in parallel".
 ## Key files in this repo
 
 - `ROADMAP.md` — phases + current position. Read first, always.
+- `WORKSTREAMS.md` — dashboard of active parallel streams. Read first when running more than one at once.
 - `DECISIONS.md` — locked decisions with reasons.
 - `BACKLOG.md` — everything deferred. Nothing gets forgotten.
 - `STATUS.md` — latest session handoff: what's done, verified, and next. Overwritten each session.
