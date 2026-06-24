@@ -94,49 +94,48 @@ every PR. Then "are the tests green?" is answered for you, not something anyone 
 
 ---
 
-## Working in parallel — give each task its own folder (worktrees)
+## Working in parallel — one folder per stream (worktrees)
 
-Everything above assumes **one task at a time** — the simple default: one branch, one folder.
-But sometimes you want **two or three things going at once** (e.g. two Claude chats open, each
-building a different feature). If they share one folder they'll trip over each other — a folder
-can only be on one branch at a time, so both chats end up piling onto the *same* branch. The fix
-is a **worktree**.
+The simple default is **one task at a time**: one branch, one folder. But you can run **several tasks at
+once** — different chats/agents each building a different feature. The tool that makes this safe is a
+**worktree**: another folder holding the same project, locked to its own branch. One chat per folder = they
+physically cannot collide.
 
-**A worktree is just another folder holding the same project, locked to its own branch.** Same
-project history underneath; separate folders on top. One chat per folder = they physically can't
-collide.
+**The layout (bare repo).** A Poooof project is one folder containing the git engine plus one folder per
+branch:
 
 ```
-yourproject/              → branch: main          (home base)
-yourproject-trees/
-   ├─ feature-a/          → branch: feature/a      (chat 1 works here)
-   └─ feature-b/          → branch: feature/b      (chat 2 works here)
+ProjectName/
+├── .bare/        ← the git engine (hidden; you never open it)
+├── main/         ← the LIVE branch (deploys / merges land here)
+├── audience/     ← a parallel stream (branch feat/audience)
+└── billing/      ← another parallel stream (branch feat/billing)
 ```
 
-Three commands — your agent runs these for you, you don't have to memorize them:
+You open `ProjectName/<stream>/` to work that feature, `ProjectName/main/` for the live branch.
+`git worktree list` (from any of them) is always the true map.
 
-```
-# CREATE a worktree (new folder + new branch off the latest main)
-git worktree add ../yourproject-trees/feature-a -b feature/a main
+**You don't type git for this.** Two skills do the whole lifecycle:
 
-# USE it: open a new Claude Code / editor window in that folder and work normally.
-#         Commit, push, and open a PR from inside it — exactly like any branch.
+- `workstream:start-stream <name>` — makes the folder + branch off the latest `main`, seeds the stream's
+  `STATUS.md`, and adds a row to `WORKSTREAMS.md`. The agent proposes this automatically (confirm-first)
+  the moment you start a second task while one is unfinished.
+- `workstream:finish-stream [name]` — once the feature is done and merged, it promotes the stream's locked
+  decisions into `DECISIONS.md`, removes the folder, deletes the branch, and clears the `WORKSTREAMS.md` row.
 
-# REMOVE it once the feature is merged (deletes the folder safely)
-git worktree remove ../yourproject-trees/feature-a
-```
+**`WORKSTREAMS.md` is the dashboard.** It lists every active stream and who owns it. Read it first every
+session — it's how any agent (including Codex) sees what's in flight and never grabs a stream someone else
+is driving.
 
-Golden rules (mostly enforced by git, so they're hard to get wrong):
-- **One branch per worktree.** Git won't let the same branch be open in two folders.
-- **Never delete a worktree folder by hand in Finder** — always `git worktree remove`, so git's
-  bookkeeping stays clean.
-- **Start each worktree from a fresh `main`** (the command above does), so features don't inherit
-  each other's half-done work.
+Golden rules (mostly enforced by git, so they're hard to break):
+- **One branch per worktree** — git won't let the same branch be open in two folders.
+- **Never delete a stream folder by hand in Finder** — always `finish-stream` (or `git worktree remove`), so
+  git's bookkeeping stays clean.
+- **Every stream starts from a fresh `main`** (the skill does this), so features don't inherit each other's
+  half-done work.
 
-**When to bother:** only when you're genuinely running 2+ tasks at the same moment. One thing at a
-time — even across different days — is simpler as a plain branch. Your agent applies this rule for
-you (see `CLAUDE.md`): if you ask it to start a second task while one's already in flight, it offers
-to set up a worktree instead of piling onto the current branch.
+**When to bother:** only when you're genuinely running 2+ tasks at the same moment. One thing at a time —
+even across different days — is simpler as a plain branch on `main`.
 
 ---
 
