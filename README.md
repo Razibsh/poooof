@@ -74,12 +74,18 @@ codex plugin marketplace upgrade poooof
 poooof/
 ├── .claude-plugin/marketplace.json     # Claude Code: makes the repo installable
 ├── .agents/plugins/marketplace.json    # Codex: makes the repo installable
-└── plugins/new-project/
+├── plugins/new-project/
+│   ├── .claude-plugin/plugin.json      # Claude Code plugin identity
+│   ├── .codex-plugin/plugin.json       # Codex plugin identity
+│   └── skills/new-project/
+│       ├── SKILL.md                    # the /new-project command (shared by both)
+│       └── claude-project-template/    # the framework template it copies (shared)
+└── plugins/workstream/
     ├── .claude-plugin/plugin.json      # Claude Code plugin identity
     ├── .codex-plugin/plugin.json       # Codex plugin identity
-    └── skills/new-project/
-        ├── SKILL.md                    # the /new-project command (shared by both)
-        └── claude-project-template/    # the framework template it copies (shared)
+    └── skills/workstream/
+        ├── start-stream/SKILL.md       # workstream:start-stream command
+        └── finish-stream/SKILL.md      # workstream:finish-stream command
 ```
 
 Both tools read the **same** `skills/new-project/` folder and the **same** template — one source of truth. The command resolves the template path per tool (`${CLAUDE_PLUGIN_ROOT}` in Claude Code, the skill's own directory in Codex).
