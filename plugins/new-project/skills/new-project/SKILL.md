@@ -28,45 +28,53 @@ Scaffold a brand-new project from the bundled framework template, then get it to
 
 2. **Safety check — never overwrite.** Run `test -d "<destination>" && ls -A "<destination>"`. If the folder already exists and is non-empty, STOP and tell the operator; offer a different name or location. Only proceed when the destination is absent or empty.
 
-3. **Copy the bundled template.** First resolve this skill's own directory into `SKILL_DIR`:
-   - **Claude Code:** `SKILL_DIR="${CLAUDE_PLUGIN_ROOT}/skills/new-project"`
-   - **Codex:** set `SKILL_DIR` to the absolute path of the folder that contains this SKILL.md (the same folder this file lives in).
-
-   Then copy:
+3. **Create the bare-repo project skeleton, then copy the template into `main/`.**
    ```
-   TEMPLATE="$SKILL_DIR/claude-project-template"
+   TEMPLATE="${CLAUDE_PLUGIN_ROOT}/skills/new-project/claude-project-template"
    mkdir -p "<destination>"
-   cp -R "$TEMPLATE/." "<destination>/"
-   rm -f "<destination>/.DS_Store"
+   git -C "<destination>" init --bare .bare -q
+   printf 'gitdir: ./.bare\n' > "<destination>/.git"
+   git -C "<destination>" symbolic-ref HEAD refs/heads/main
+   git -C "<destination>" worktree add --orphan -b main main
+   cp -R "$TEMPLATE/." "<destination>/main/"
+   rm -f "<destination>/main/.DS_Store"
    ```
-   (The bundled template is already clean — no git history, no template-only files — so a plain copy is all that's needed.)
+   Result: `<destination>/` holds `.bare/`, `.git`, and `main/` (the live branch) with the template inside
+   `main/`. All project work and docs live under `main/` (and, later, sibling stream folders). This requires
+   git ≥ 2.42 for `worktree add --orphan` (verified on git 2.50.1).
 
-4. **Fresh git history.**
+4. **First commit (inside `main/`).**
    ```
-   cd "<destination>"
-   git init -q && git add -A && git commit -q -m "Scaffold <project name> from Poooof template"
+   cd "<destination>/main"
+   git add -A && git commit -q -m "Scaffold <project name> from Poooof template"
    ```
+   (The bare repo already exists from Step 3; this just records the first commit on `main`.)
 
 5. **Ask about GitHub** (ask each time). Use AskUserQuestion — "Create a private GitHub repo and push now, or keep it local for now?" If yes:
    ```
-   gh repo create "<repo-name>" --private --source=. --remote=origin --push
+   gh repo create "<repo-name>" --private --source="<destination>/main" --remote=origin --push
    ```
    Use a slug for `<repo-name>` (lowercase, hyphens). If `gh` is missing or not authenticated, say so plainly and continue local-only — don't block the scaffold.
 
-6. **Interview to fill in CLAUDE.md.** Read the copied `CLAUDE.md`. It contains `> FILL IN` blocks: *What this is*, *Architecture / stack*, *Product rules*, *Testing*. Ask the operator about each — conversationally, one topic at a time, not as a wall of questions — and replace each block with their answers in plain language. Replace the `<PROJECT NAME>` title. Delete the HTML `<!-- ... -->` guidance comments as you fill each block. **Leave the numbered workflow-rules section unchanged** — those are the standard rules.
+6. **Interview to fill in CLAUDE.md.** Read `<destination>/main/CLAUDE.md`. It contains `> FILL IN` blocks: *What this is*, *Architecture / stack*, *Product rules*, *Testing*. Ask the operator about each — conversationally, one topic at a time, not as a wall of questions — and replace each block with their answers in plain language. Replace the `<PROJECT NAME>` title. Delete the HTML `<!-- ... -->` guidance comments as you fill each block. **Leave the numbered workflow-rules section unchanged** — those are the standard rules.
 
 7. **Draft ROADMAP Phase 1.** From the interview, replace the ROADMAP placeholders: name Phase 1 and give it 3–6 concrete first tasks, each with a real, observable `verify:` criterion (a test, a real run, a visible result — not "should work"). Keep Phase 2+ as rough one-line candidates. Don't over-plan far phases.
 
 8. **Seed STATUS.md** with the starting state: Done = "scaffolded from template, project context + Phase 1 defined"; Verified = scaffold committed; Next = the first Phase 1 task; Docs in sync = yes.
+   Leave `WORKSTREAMS.md` as the empty-dashboard template copied in — a fresh project has no parallel streams
+   yet. (Streams get added later by `workstream:start-stream`.)
 
 9. **Commit the filled-in docs.**
    ```
+   cd "<destination>/main"
    git add -A && git commit -q -m "Fill in project context + draft Phase 1 roadmap"
    ```
    (If a GitHub remote was created in step 5, `git push -q`.)
 
 10. **Report.** Give the operator: the project path, git status (and whether a GitHub remote exists), and the Phase 1 plan. End with the handoff line:
-    > Next: open the new folder and tell your agent — *"Read CLAUDE.md and ROADMAP.md, then let's start Phase 1."*
+    > Next: open the new project's `main/` folder and tell your agent —
+    > *"Read CLAUDE.md and ROADMAP.md, then let's start Phase 1."*
+    > To run a second feature in parallel later, just ask — the agent will set up a worktree stream for you.
 
 ## Rules
 
