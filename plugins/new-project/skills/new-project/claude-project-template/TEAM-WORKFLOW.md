@@ -151,13 +151,20 @@ even across different days — is simpler as a plain branch on `main`.
 
 ## A day in the life (concrete)
 
-1. **Morning:** `git checkout main && git pull`. Read `ROADMAP.md` to see the current phase.
-2. **Pick a task**, make a branch for it: `git checkout -b feature/x`.
-3. **Tell your agent** what to build; it works on that branch, committing small steps, updating the
+1. **Morning:** `cd ProjectName/main && git pull`. Read `ROADMAP.md` to see the current phase and
+   `WORKSTREAMS.md` to see what's already in flight.
+2. **Pick a task.**
+   - **Single task (most common):** work right here in `ProjectName/main/`. Your agent commits on a
+     short-lived branch off `main` — no extra folder needed.
+   - **Parallel task (you already have something else open):** tell your agent to start a stream:
+     `workstream:start-stream <name>`. It creates `ProjectName/<name>/` with its own branch and a
+     `STATUS.md`, then registers it in `WORKSTREAMS.md`. Then `cd ProjectName/<name>` to work there.
+3. **Tell your agent** what to build; it works in that folder, committing small steps, updating the
    docs as it goes.
-4. **When it's done and tested**, push and open a PR: `git push -u origin feature/x && gh pr create --fill`.
-5. **Review** (you, your partner, or an AI review pass). Fix anything flagged on the same branch.
-6. **Merge** the PR into `main`. Delete the branch. Everyone else pulls and gets your work.
+4. **When it's done and tested**, push and open a PR: `git push -u origin <branch> && gh pr create --fill`.
+5. **Review** (you, your partner, or an AI review pass). Fix anything flagged in the same folder.
+6. **Merge** the PR into `main`. Then run `workstream:finish-stream [name]` to clean up the stream
+   folder, branch, and dashboard row. Everyone else pulls `main` and gets your work.
 7. Repeat. Because each task was small, conflicts are rare and `main` is always working.
 
 ---
