@@ -106,9 +106,17 @@ Two commands run the whole lifecycle (no git knowledge needed):
   `STATUS.md`, and registers it in `WORKSTREAMS.md`.
 - `workstream:finish-stream [name]` — merges it (PR by default), promotes its decisions into `DECISIONS.md`,
   and cleans up the folder + branch + dashboard row.
+- `workstream:convert-to-bare [path]` — **adopt the framework in an existing project**: safely converts a
+  normal flat repo to this bare-repo layout (build-new-then-swap with a full backup; carries over `.env` and
+  all local-only files; audits branches for unmerged work before discarding). After it runs, the two skills
+  above work in that project.
 
 `WORKSTREAMS.md` (on `main`) is the dashboard of what's in flight and who owns each stream — every agent reads
 it first, so two sessions never collide. See a scaffolded project's `TEAM-WORKFLOW.md` for the full guide.
+
+**Root signpost:** a bare-repo project also gets a tiny `CLAUDE.md` + `AGENTS.md` at its *root* (next to
+`.bare/` and `main/`). If you open an editor/agent at the root instead of inside `main/`, the signpost routes
+the agent into the right worktree — so it always works in the correct folder.
 
 **Install (alongside new-project, same marketplace):**
 
