@@ -54,13 +54,22 @@ If more than one person or AI agent will touch this repo, read `TEAM-WORKFLOW.md
 never commit straight to `main`; one branch per task; one agent per branch at a time; small frequent
 merges; every change goes through a pull request before it reaches `main`.
 
-**Parallel-work rule (apply automatically):** before starting a new task, check `WORKSTREAMS.md` and whether
-work is already in progress (uncommitted changes, or the operator opening a *second* task while a first is
-unfinished). If a new task would run in parallel, don't pile onto the current branch — say so and propose a
-worktree: *"this is a new parallel stream — I'll run `poooof:start-stream <name>`, ok?"* and wait for a
-yes (confirm-first). One task at a time needs no worktree — just branch normally. When a stream is done and
-merged, run `poooof:finish-stream` to clean up. The bare-repo layout, the two skills, and the
-`WORKSTREAMS.md` dashboard are described in `TEAM-WORKFLOW.md` → "Working in parallel".
+**Parallel-work rule (apply automatically):** Casual chat, questions, and exploration **never** need a
+worktree — don't create one just because a topic came up. The trigger is **real feature work**: you're
+brainstorming / spec'ing / planning a feature the operator intends to build, or you're about to write code or
+a design doc for it. The moment that starts, **check for collision signals before producing anything**:
+- Is `main/` already on a *feature* branch, or does it hold uncommitted changes? (run `git status` / `git branch --show-current`)
+- Are other streams active? (`git worktree list` / `WORKSTREAMS.md`)
+- Is the operator starting this while another task is still unfinished?
+
+If **any** signal says work is already in flight, do **not** pile onto that branch — propose a stream
+(confirm-first): *"this is real feature work and something else is already in progress — I'll run
+`poooof:start-stream <name>`, ok?"* and wait for a yes. If `main/` is clean and nothing else is in flight, you
+may proceed in place and create the stream at the build hand-off (when code starts). **Never do feature work
+in a `main/` that's already on another feature's branch or holds another feature's uncommitted changes** —
+that is the exact two-sessions-one-folder collision the streams exist to prevent. When a stream is done and
+merged, run `poooof:finish-stream` to clean up. The bare-repo layout, the two skills, and the `WORKSTREAMS.md`
+dashboard are described in `TEAM-WORKFLOW.md` → "Working in parallel".
 
 ## Reference material & feature specs (conventions)
 
