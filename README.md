@@ -71,7 +71,7 @@ There are two ways to get new versions. Because this plugin tracks the repo dire
 
 After that, each time you start Claude Code it pulls the latest Poooof and shows a small prompt to run `/reload-plugins` to activate it. No more manual checking.
 
-> Note: updates arrive at **startup** (Option B) or **on demand** (Option A) — there's no mid-session "update available" popup.
+> Note: updates arrive at **startup** (Option B) or **on demand** (Option A) — there's no mid-session "update available" popup. If you're on Option A and fall behind, Poooof shows a one-line nudge at session start (`⬆ poooof X.Y.Z available — run /plugin update poooof@poooof`) so you know when to pull.
 
 **On Codex CLI**, pull the latest with:
 
