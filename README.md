@@ -16,6 +16,14 @@ Poooof is a plugin for **[Claude Code](https://claude.com/claude-code)** *and* *
 This one plugin gives you every command, all namespaced `poooof:` — `poooof:new-project`,
 `poooof:start-stream`, `poooof:finish-stream`, `poooof:convert-to-bare`.
 
+**👉 Turn on auto-update now (do this once — recommended).** Then you get every new version automatically at
+startup, and never have to update by hand again:
+
+> `/plugin` → **Marketplaces** tab → select **poooof** → **Enable auto-update**
+
+(Auto-update is off by default for third-party marketplaces, so this one toggle is the difference between
+"always current" and "manually chasing updates." See [Stay up to date](#stay-up-to-date) for details.)
+
 **Codex CLI:**
 
 ```
@@ -70,6 +78,22 @@ After that, each time you start Claude Code it pulls the latest Poooof and shows
 ```
 codex plugin marketplace upgrade poooof
 ```
+
+### Sharing with clients / teammates
+
+You **cannot silently push** updates to someone's machine — by design, plugins only update when the user
+pulls or has auto-update enabled (plugins run with full user privileges, so updates require their opt-in).
+So the trick is a **one-time** setup per person, not a manual chase every release:
+
+- **Each user enables auto-update once** (Install step above). After that, every push you make to GitHub
+  reaches them at their next Claude Code startup — zero further action.
+- **For an org/team you administer:** pre-enable it for everyone via managed settings — add `poooof` to
+  `extraKnownMarketplaces` with `"autoUpdate": true`. Then teammates get updates automatically without
+  toggling anything themselves.
+
+Because Poooof tracks the repo's latest commit (no pinned `version`), **every merge to `main` is a release.**
+If you build features as workstreams (WIP stays on stream branches, only finished work merges to `main`),
+`main` stays clean and auto-update users only ever get deliberate, releasable versions — no half-done work.
 
 ## What's inside
 
