@@ -8,7 +8,7 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(ls:*), Bash(test:*), Bash(cp:*), Ba
 # Convert a flat repo to the bare-repo workstream layout
 
 Turn an existing normal git clone (`Project/` with a hidden `.git` and code at top level) into the Poooof
-bare-repo layout (`Project/{.bare, .git, main/}` + per-stream folders), so `workstream:start-stream` /
+bare-repo layout (`Project/{.bare, .git, main/}` + per-stream folders), so `poooof:start-stream` /
 `finish-stream` work there. This is **destructive** (it restructures folders) so the method is *build a new
 layout beside the old, verify, swap with the old kept as a backup, and only delete after an explicit audit*.
 Plain language; the operator may not be a developer. **Confirm-first at every destructive step.**
@@ -66,7 +66,7 @@ Plain language; the operator may not be a developer. **Confirm-first at every de
    printf 'gitdir: ./.bare\n' > "$NEW/.git"
    git -C "$NEW" worktree add ./main "<MAIN>"
    # root signpost (route agents opened at the root into main/):
-   cp "${CLAUDE_PLUGIN_ROOT}/../new-project/skills/new-project/bare-root-signpost.md" "$NEW/CLAUDE.md" \
+   cp "${CLAUDE_PLUGIN_ROOT}/skills/new-project/bare-root-signpost.md" "$NEW/CLAUDE.md" \
      2>/dev/null || true
    [ -f "$NEW/CLAUDE.md" ] || printf '# Bare-repo root — work in main/, not here. cd main and follow its CLAUDE.md.\n' > "$NEW/CLAUDE.md"
    ln -sf CLAUDE.md "$NEW/AGENTS.md"

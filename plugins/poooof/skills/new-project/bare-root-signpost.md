@@ -14,7 +14,7 @@ working file lives inside a worktree subfolder.
   2. `cd main` — the default working folder — **or** into the stream folder for the feature the user named.
   3. Read that folder's `CLAUDE.md` and `WORKSTREAMS.md`, then do all work there.
 - Never run two sessions in the same worktree folder. Parallel work = a separate stream folder
-  (see `main/TEAM-WORKFLOW.md` and the `workstream:start-stream` skill).
+  (see `main/TEAM-WORKFLOW.md` and the `poooof:start-stream` skill).
 
 ## For humans
 

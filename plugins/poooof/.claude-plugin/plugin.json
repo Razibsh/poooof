@@ -1,0 +1,13 @@
+{
+  "name": "poooof",
+  "displayName": "Poooof",
+  "description": "A lightweight project framework: scaffold new projects (new-project), run several features in parallel with git-worktree streams (start-stream / finish-stream), and adopt the framework in existing repos (convert-to-bare). Every command is poooof:<name>.",
+  "author": {
+    "name": "Razibsh",
+    "email": "shyfttothetop@gmail.com"
+  },
+  "homepage": "https://github.com/Razibsh/poooof",
+  "repository": "https://github.com/Razibsh/poooof",
+  "license": "MIT",
+  "keywords": ["scaffold", "template", "framework", "worktree", "parallel", "workflow", "multi-agent"]
+}

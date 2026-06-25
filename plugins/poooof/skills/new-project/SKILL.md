@@ -67,7 +67,7 @@ Scaffold a brand-new project from the bundled framework template, then get it to
 
 8. **Seed STATUS.md** with the starting state: Done = "scaffolded from template, project context + Phase 1 defined"; Verified = scaffold committed; Next = the first Phase 1 task; Docs in sync = yes.
    Leave `WORKSTREAMS.md` as the empty-dashboard template copied in — a fresh project has no parallel streams
-   yet. (Streams get added later by `workstream:start-stream`.)
+   yet. (Streams get added later by `poooof:start-stream`.)
 
 9. **Commit the filled-in docs.**
    ```

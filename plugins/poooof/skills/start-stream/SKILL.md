@@ -57,7 +57,7 @@ wait for a yes before creating anything.
    If `origin` exists, `git push -q` both branches.
 
 7. **Report.** Tell the operator the exact folder to open (`<ROOT>/<name>/`) and that they (or another
-   agent/Codex) can now work there independently. Remind them to run `workstream:finish-stream` when it's
+   agent/Codex) can now work there independently. Remind them to run `poooof:finish-stream` when it's
    merged.
 
 ## Rules
