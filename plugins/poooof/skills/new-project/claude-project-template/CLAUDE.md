@@ -57,9 +57,9 @@ merges; every change goes through a pull request before it reaches `main`.
 **Parallel-work rule (apply automatically):** before starting a new task, check `WORKSTREAMS.md` and whether
 work is already in progress (uncommitted changes, or the operator opening a *second* task while a first is
 unfinished). If a new task would run in parallel, don't pile onto the current branch — say so and propose a
-worktree: *"this is a new parallel stream — I'll run `workstream:start-stream <name>`, ok?"* and wait for a
+worktree: *"this is a new parallel stream — I'll run `poooof:start-stream <name>`, ok?"* and wait for a
 yes (confirm-first). One task at a time needs no worktree — just branch normally. When a stream is done and
-merged, run `workstream:finish-stream` to clean up. The bare-repo layout, the two skills, and the
+merged, run `poooof:finish-stream` to clean up. The bare-repo layout, the two skills, and the
 `WORKSTREAMS.md` dashboard are described in `TEAM-WORKFLOW.md` → "Working in parallel".
 
 ## Reference material & feature specs (conventions)

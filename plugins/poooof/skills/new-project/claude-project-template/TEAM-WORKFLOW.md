@@ -117,10 +117,10 @@ You open `ProjectName/<stream>/` to work that feature, `ProjectName/main/` for t
 
 **You don't type git for this.** Two skills do the whole lifecycle:
 
-- `workstream:start-stream <name>` — makes the folder + branch off the latest `main`, seeds the stream's
+- `poooof:start-stream <name>` — makes the folder + branch off the latest `main`, seeds the stream's
   `STATUS.md`, and adds a row to `WORKSTREAMS.md`. The agent proposes this automatically (confirm-first)
   the moment you start a second task while one is unfinished.
-- `workstream:finish-stream [name]` — once the feature is done and merged, it promotes the stream's locked
+- `poooof:finish-stream [name]` — once the feature is done and merged, it promotes the stream's locked
   decisions into `DECISIONS.md`, removes the folder, deletes the branch, and clears the `WORKSTREAMS.md` row.
 
 **`WORKSTREAMS.md` is the dashboard.** It lists every active stream and who owns it. Read it first every
@@ -157,13 +157,13 @@ even across different days — is simpler as a plain branch on `main`.
    - **Single task (most common):** work right here in `ProjectName/main/`. Your agent commits on a
      short-lived branch off `main` — no extra folder needed.
    - **Parallel task (you already have something else open):** tell your agent to start a stream:
-     `workstream:start-stream <name>`. It creates `ProjectName/<name>/` with its own branch and a
+     `poooof:start-stream <name>`. It creates `ProjectName/<name>/` with its own branch and a
      `STATUS.md`, then registers it in `WORKSTREAMS.md`. Then `cd ProjectName/<name>` to work there.
 3. **Tell your agent** what to build; it works in that folder, committing small steps, updating the
    docs as it goes.
 4. **When it's done and tested**, push and open a PR: `git push -u origin <branch> && gh pr create --fill`.
 5. **Review** (you, your partner, or an AI review pass). Fix anything flagged in the same folder.
-6. **Merge** the PR into `main`. Then run `workstream:finish-stream [name]` to clean up the stream
+6. **Merge** the PR into `main`. Then run `poooof:finish-stream [name]` to clean up the stream
    folder, branch, and dashboard row. Everyone else pulls `main` and gets your work.
 7. Repeat. Because each task was small, conflicts are rare and `main` is always working.
 

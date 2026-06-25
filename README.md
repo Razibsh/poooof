@@ -10,8 +10,11 @@ Poooof is a plugin for **[Claude Code](https://claude.com/claude-code)** *and* *
 
 ```
 /plugin marketplace add Razibsh/poooof
-/plugin install new-project@poooof
+/plugin install poooof@poooof
 ```
+
+This one plugin gives you every command, all namespaced `poooof:` — `poooof:new-project`,
+`poooof:start-stream`, `poooof:finish-stream`, `poooof:convert-to-bare`.
 
 **Codex CLI:**
 
@@ -19,14 +22,14 @@ Poooof is a plugin for **[Claude Code](https://claude.com/claude-code)** *and* *
 codex plugin marketplace add Razibsh/poooof
 ```
 
-then open Codex and run `/plugins` to install/enable **new-project**.
+then open Codex and run `/plugins` to install/enable **poooof**.
 
-That's it. From now on, `/new-project` works in any folder.
+That's it. From now on, `/poooof:new-project` (and the other `poooof:` commands) work in any folder.
 
 ## Use it
 
 ```
-/new-project
+/poooof:new-project
 ```
 
 It asks for a project name and where to create it, copies the template, sets up git, optionally creates a GitHub repo, then interviews you to fill in the project's context and draft a first-phase plan. The original template is **never touched** — every run copies *from* it into a fresh folder.
@@ -48,7 +51,7 @@ There are two ways to get new versions. Because this plugin tracks the repo dire
 
 ```
 /plugin marketplace update poooof
-/plugin update new-project@poooof
+/plugin update poooof@poooof
 ```
 
 **Option B — automatic (set once, recommended).** Turn on auto-update for this marketplace and Claude Code will fetch + install new versions for you on startup:
@@ -74,25 +77,24 @@ codex plugin marketplace upgrade poooof
 poooof/
 ├── .claude-plugin/marketplace.json     # Claude Code: makes the repo installable
 ├── .agents/plugins/marketplace.json    # Codex: makes the repo installable
-├── plugins/new-project/
-│   ├── .claude-plugin/plugin.json      # Claude Code plugin identity
-│   ├── .codex-plugin/plugin.json       # Codex plugin identity
-│   └── skills/new-project/
-│       ├── SKILL.md                    # the /new-project command (shared by both)
-│       └── claude-project-template/    # the framework template it copies (shared)
-└── plugins/workstream/
+└── plugins/poooof/                     # one plugin, every command namespaced poooof:
     ├── .claude-plugin/plugin.json      # Claude Code plugin identity
     ├── .codex-plugin/plugin.json       # Codex plugin identity
-    └── skills/workstream/
-        ├── start-stream/SKILL.md       # workstream:start-stream command
-        └── finish-stream/SKILL.md      # workstream:finish-stream command
+    └── skills/
+        ├── new-project/
+        │   ├── SKILL.md                # poooof:new-project
+        │   ├── bare-root-signpost.md   # root signpost dropped into bare-repo projects
+        │   └── claude-project-template/ # the framework template it copies
+        ├── start-stream/SKILL.md       # poooof:start-stream
+        ├── finish-stream/SKILL.md      # poooof:finish-stream
+        └── convert-to-bare/SKILL.md    # poooof:convert-to-bare
 ```
 
-Both tools read the **same** `skills/new-project/` folder and the **same** template — one source of truth. The command resolves the template path per tool (`${CLAUDE_PLUGIN_ROOT}` in Claude Code, the skill's own directory in Codex).
+Both Claude Code and Codex read the **same** skills + template — one source of truth. The command resolves the template path per tool (`${CLAUDE_PLUGIN_ROOT}` in Claude Code, the skill's own directory in Codex).
 
 ## Workstreams — build several features in parallel
 
-The `workstream` plugin lets one person drive 3–6 agent sessions at once (Claude + Codex) without losing
+Poooof lets one person drive 3–6 agent sessions at once (Claude + Codex) without losing
 track of anything. A project uses a **bare-repo layout** — one folder per branch:
 
     ProjectName/
@@ -102,11 +104,11 @@ track of anything. A project uses a **bare-repo layout** — one folder per bran
 
 Two commands run the whole lifecycle (no git knowledge needed):
 
-- `workstream:start-stream <name>` — creates the stream's folder + branch off the latest `main`, seeds its
+- `poooof:start-stream <name>` — creates the stream's folder + branch off the latest `main`, seeds its
   `STATUS.md`, and registers it in `WORKSTREAMS.md`.
-- `workstream:finish-stream [name]` — merges it (PR by default), promotes its decisions into `DECISIONS.md`,
+- `poooof:finish-stream [name]` — merges it (PR by default), promotes its decisions into `DECISIONS.md`,
   and cleans up the folder + branch + dashboard row.
-- `workstream:convert-to-bare [path]` — **adopt the framework in an existing project**: safely converts a
+- `poooof:convert-to-bare [path]` — **adopt the framework in an existing project**: safely converts a
   normal flat repo to this bare-repo layout (build-new-then-swap with a full backup; carries over `.env` and
   all local-only files; audits branches for unmerged work before discarding). After it runs, the two skills
   above work in that project.
@@ -118,19 +120,14 @@ it first, so two sessions never collide. See a scaffolded project's `TEAM-WORKFL
 `.bare/` and `main/`). If you open an editor/agent at the root instead of inside `main/`, the signpost routes
 the agent into the right worktree — so it always works in the correct folder.
 
-**Install (alongside new-project, same marketplace):**
-
-```
-/plugin marketplace add Razibsh/poooof   # if not already added
-/plugin install workstream@poooof
-```
+These commands ship in the same `poooof` plugin (see **Install** above) — no extra install.
 
 ## For the author — how to improve the framework
 
 This repo is the single source of truth (the "workshop"). To change the template or the command:
 
 1. Open Claude Code **inside this repo folder**.
-2. Edit the template under `plugins/new-project/skills/new-project/claude-project-template/`, or edit `SKILL.md` to change how the command behaves.
+2. Edit the template under `plugins/poooof/skills/new-project/claude-project-template/`, or edit a skill's `SKILL.md` to change how its command behaves.
 3. Commit and push to GitHub.
 4. Everyone gets it on their next update — `/plugin update` (Claude Code) or `codex plugin marketplace upgrade poooof` (Codex).
 

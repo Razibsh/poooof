@@ -2,18 +2,10 @@
   "name": "poooof",
   "plugins": [
     {
-      "name": "new-project",
+      "name": "poooof",
       "source": {
         "source": "local",
-        "path": "./plugins/new-project"
-      },
-      "category": "Productivity"
-    },
-    {
-      "name": "workstream",
-      "source": {
-        "source": "local",
-        "path": "./plugins/workstream"
+        "path": "./plugins/poooof"
       },
       "category": "Productivity"
     }
