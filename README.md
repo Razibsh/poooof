@@ -87,6 +87,12 @@ So the trick is a **one-time** setup per person, not a manual chase every releas
 
 - **Each user enables auto-update once** (Install step above). After that, every push you make to GitHub
   reaches them at their next Claude Code startup — zero further action.
+- **Onboarding is built in:** every project scaffolded by `poooof:new-project` ships a
+  `main/.claude/settings.json` that registers the poooof marketplace, enables the plugin, and sets
+  `autoUpdate`. So when a teammate/client **opens a poooof project and trusts the folder**, they're prompted to
+  install the framework and it stays current — no manual `/plugin` steps. (The marketplace-register + enable
+  works on folder-trust; the `autoUpdate` part is honored where the platform allows it, and the `⬆ poooof`
+  startup nudge covers anyone it doesn't auto-update.)
 - **For an org/team you administer:** pre-enable it for everyone via managed settings — add `poooof` to
   `extraKnownMarketplaces` with `"autoUpdate": true`. Then teammates get updates automatically without
   toggling anything themselves.

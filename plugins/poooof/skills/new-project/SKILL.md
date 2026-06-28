@@ -43,7 +43,10 @@ Scaffold a brand-new project from the bundled framework template, then get it to
    ln -sf CLAUDE.md "<destination>/AGENTS.md"
    ```
    Result: `<destination>/` holds `.bare/`, `.git`, `main/` (the live branch, template inside it), and a root
-   `CLAUDE.md` + `AGENTS.md` signpost. All project work and docs live under `main/` (and, later, sibling stream
+   `CLAUDE.md` + `AGENTS.md` signpost. The template also carries `main/.claude/settings.json`, which registers
+   the poooof marketplace + enables the plugin with `autoUpdate` — so anyone who later opens this project and
+   trusts the folder gets the framework auto-installed and kept current, no manual setup. (It's copied as-is;
+   don't edit it during the interview.) All project work and docs live under `main/` (and, later, sibling stream
    folders). The root signpost is a loose local file (the bare root isn't a git working tree) — it tells an
    agent that opens at the root to `cd main` and follow that folder's rules. This requires git ≥ 2.42 for
    `worktree add --orphan` (verified on git 2.50.1).

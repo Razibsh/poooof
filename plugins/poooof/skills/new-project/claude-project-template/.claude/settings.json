@@ -1,0 +1,14 @@
+{
+  "extraKnownMarketplaces": {
+    "poooof": {
+      "source": {
+        "source": "github",
+        "repo": "Razibsh/poooof"
+      },
+      "autoUpdate": true
+    }
+  },
+  "enabledPlugins": {
+    "poooof@poooof": true
+  }
+}
