@@ -91,6 +91,6 @@ if (!cache || typeof cache.checked !== 'number' || now - cache.checked > REFRESH
 // itself the moment the user actually updates.
 if (cache && cache.latest && isNewer(cache.latest, installed)) {
   process.stdout.write(JSON.stringify({
-    systemMessage: `⬆ poooof ${cache.latest} available (you have ${installed}) — run /plugin update poooof@poooof`,
+    systemMessage: `⬆ poooof ${cache.latest} available (you have ${installed}) — update with: /plugin marketplace update poooof  then  /plugin update poooof@poooof`,
   }));
 }

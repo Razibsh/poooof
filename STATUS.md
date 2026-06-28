@@ -2,6 +2,9 @@
 
 **Last updated:** 2026-06-28 — v1.2.0: onboarding auto-update. Every scaffolded project now ships `main/.claude/settings.json` (registers the poooof marketplace + enables the plugin + `autoUpdate`), so collaborators who open a project and trust the folder get the framework auto-installed and kept current. v1.1.0 (below): doc-sync automation + parallel-stream conflict safety.
 
+## Done this session (v1.2.1)
+- Nudge message now spells out both steps (`/plugin marketplace update poooof` then `/plugin update poooof@poooof`) — the catalog can be stale, so "update plugin" alone reads an old version and reports "nothing new." Learned the hard way during a live update.
+
 ## Done this session (v1.2.0)
 - New `claude-project-template/.claude/settings.json`: `extraKnownMarketplaces` (poooof, `autoUpdate:true`) + `enabledPlugins` (`poooof@poooof`). Copied into every new project's `main/` by `new-project` (cp `-R "$TEMPLATE/."` includes dotfiles; `.claude/` isn't gitignored so it's committed and travels to teammates). `new-project` step 3 documents it.
 - Auto-update for clients is now an onboarding side-effect of opening+trusting a scaffolded project — no manual `/plugin` steps. README "Sharing with clients" updated.
