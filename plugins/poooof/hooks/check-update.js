@@ -86,6 +86,28 @@ if (!cache || typeof cache.checked !== 'number' || now - cache.checked > REFRESH
   }
 }
 
+// Self-heal the cache. The worker stamps `installed`/`update_available` against
+// whatever version was live when it last ran (up to REFRESH_AFTER_SECONDS ago),
+// so right after an update those fields lie until the next refresh. We already
+// know the true installed version here, so rewrite the snapshot the moment it's
+// wrong. This matters for *naive* cache readers — e.g. a statusline segment that
+// trusts `update_available` verbatim — which would otherwise keep nudging for
+// hours after the user updated. The banner below re-compares regardless.
+if (cache && cache.latest) {
+  const fresh = isNewer(cache.latest, installed);
+  if (cache.installed !== installed || cache.update_available !== fresh) {
+    try {
+      fs.writeFileSync(cacheFile, JSON.stringify({
+        ...cache,
+        installed,
+        update_available: fresh,
+      }));
+    } catch (e) {
+      // Best-effort: a stale cache is cosmetic, never worth failing a session.
+    }
+  }
+}
+
 // Show the banner from whatever the last refresh found. Compare against the
 // CURRENT installed version (not the cache's snapshot) so the nudge clears
 // itself the moment the user actually updates.

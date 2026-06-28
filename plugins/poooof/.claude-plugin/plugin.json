@@ -1,6 +1,6 @@
 {
   "name": "poooof",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "displayName": "Poooof",
   "description": "A lightweight project framework: scaffold new projects (new-project), run several features in parallel with git-worktree streams (start-stream / finish-stream), catch same-file merge overlap before it bites (check-streams), update itself in one step (update), and adopt the framework in existing repos (convert-to-bare). Every command is poooof:<name>.",
   "author": {
