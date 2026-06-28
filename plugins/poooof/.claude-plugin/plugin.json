@@ -1,8 +1,8 @@
 {
   "name": "poooof",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "displayName": "Poooof",
-  "description": "A lightweight project framework: scaffold new projects (new-project), run several features in parallel with git-worktree streams (start-stream / finish-stream), and adopt the framework in existing repos (convert-to-bare). Every command is poooof:<name>.",
+  "description": "A lightweight project framework: scaffold new projects (new-project), run several features in parallel with git-worktree streams (start-stream / finish-stream), catch same-file merge overlap before it bites (check-streams), and adopt the framework in existing repos (convert-to-bare). Every command is poooof:<name>.",
   "author": {
     "name": "Razibsh",
     "email": "shyfttothetop@gmail.com"

@@ -1,6 +1,6 @@
 ---
 name: finish-stream
-description: Finish a parallel workstream — verify it's merged to main, promote its locked decisions into DECISIONS.md, then remove the worktree, delete the branch, and clear its WORKSTREAMS.md row. Defaults to a PR (review + test gate); a project can opt into fast-forward. User-invoked.
+description: Finish a parallel workstream — verify it's merged to main, promote its locked decisions into DECISIONS.md, reconcile ROADMAP.md/BACKLOG.md (check off + promote the delivered phase, advance the current-phase header), then remove the worktree, delete the branch, and clear its WORKSTREAMS.md row. Defaults to a PR (review + test gate); a project can opt into fast-forward. User-invoked.
 argument-hint: [stream name]
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(ls:*), Bash(test:*), Read, Write, Edit, AskUserQuestion
 ---
@@ -24,6 +24,10 @@ Plain language; the operator may not be a developer.
    Testing section / `package.json`), run it inside `$STREAM`. If tests fail, STOP and report — do not merge.
    Refuse if `$STREAM` has uncommitted changes (`git -C "$STREAM" status --porcelain` non-empty) until the
    operator commits or discards them.
+   - **Overlap pre-check (when other streams are active).** If `WORKSTREAMS.md` lists other active streams,
+     run `poooof:check-streams` first. If `<name>` shares any file with another active stream, tell the
+     operator those streams will conflict at *their* merge and should rebase onto `main` after this one
+     lands. This is a heads-up, not a blocker — landing this stream is still safe.
 
 3. **Decide merge style (per-project, asked once).** Look for a `merge_style` line in `main/DECISIONS.md`
    (values `pr` or `ff`). If absent, ask the operator once with AskUserQuestion:
@@ -42,7 +46,17 @@ Plain language; the operator may not be a developer.
    decisions into `main/DECISIONS.md` (under its list), each as a `- <decision> — <why> (<date>, from <name>)`
    line. Commit on main: `git -C "$ROOT/main" add DECISIONS.md && git -C "$ROOT/main" commit -q -m "docs(decisions): promote from <name>"`.
 
-6. **Clean up the worktree + branch.**
+6. **Reconcile `ROADMAP.md` (and `BACKLOG.md`).** The stream just finished — make the roadmap *show* it,
+   the same way every other completed phase shows it. In `main/ROADMAP.md`: check off (`[x]`) the phase /
+   items this stream delivered, add a one-line ✅ verified-on note (date + PR), and **if the phase was
+   sitting in a "Later" / backlog bucket, promote it to a proper done section** alongside the other
+   finished phases (don't leave it stranded in the rough list). Then **advance the "current position" /
+   "current phase" header** to the next real phase. If the stream cleared or added backlog items, update
+   `main/BACKLOG.md` too. Commit on main:
+   `git -C "$ROOT/main" add ROADMAP.md BACKLOG.md && git -C "$ROOT/main" commit -q -m "docs(roadmap): mark <name> done"`.
+   **A finished stream that isn't reflected in `ROADMAP.md` is not finished.**
+
+7. **Clean up the worktree + branch.**
    ```
    cd "$ROOT/main"
    git worktree remove "$ROOT/<name>"            # add --force only if it refuses due to untracked build files
@@ -50,11 +64,12 @@ Plain language; the operator may not be a developer.
    git push origin --delete "feat/<name>" 2>/dev/null || true
    ```
 
-7. **Clear the WORKSTREAMS.md row + report.** In `$ROOT/main/WORKSTREAMS.md`, delete the `<name>` row (restore
+8. **Clear the WORKSTREAMS.md row + report.** In `$ROOT/main/WORKSTREAMS.md`, delete the `<name>` row (restore
    the `| _(none active)_ |` placeholder if it was the last one). Commit on main and push if `origin` exists.
    Tell the operator the stream is merged + cleaned, and confirm `git worktree list` no longer shows it.
 
 ## Rules
+- A stream isn't done until `ROADMAP.md` reflects it — never skip the roadmap reconciliation (step 6).
 - Never clean up before the branch is actually merged into `main` (verify with `merge-base --is-ancestor`).
 - Default to PR; only fast-forward when the project's `merge_style` says so.
 - Refuse on failing tests or an uncommitted stream — surface the problem instead of forcing through.

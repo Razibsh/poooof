@@ -14,7 +14,7 @@ Poooof is a plugin for **[Claude Code](https://claude.com/claude-code)** *and* *
 ```
 
 This one plugin gives you every command, all namespaced `poooof:` — `poooof:new-project`,
-`poooof:start-stream`, `poooof:finish-stream`, `poooof:convert-to-bare`.
+`poooof:start-stream`, `poooof:finish-stream`, `poooof:check-streams`, `poooof:convert-to-bare`.
 
 **👉 Turn on auto-update now (do this once — recommended).** Then you get every new version automatically at
 startup, and never have to update by hand again:
@@ -53,7 +53,7 @@ That said, the framework pairs nicely with a couple of optional add-ons — inst
 
 ## Stay up to date
 
-There are two ways to get new versions. Because this plugin tracks the repo directly (no pinned version), **every push to GitHub becomes the new version automatically** — the only question is whether you pull it manually or let Claude Code do it.
+There are two ways to get new versions. Poooof declares a `version` in `plugin.json`, so **a new version ships when that number is bumped** (releases are deliberate, not every commit) — the only question is whether you pull it manually or let Claude Code do it. When a newer version is out and you haven't pulled it, Poooof shows a one-line `⬆ poooof X.Y.Z` nudge at session start.
 
 **Option A — manual (default).** Whenever you want the latest, run:
 
@@ -91,9 +91,10 @@ So the trick is a **one-time** setup per person, not a manual chase every releas
   `extraKnownMarketplaces` with `"autoUpdate": true`. Then teammates get updates automatically without
   toggling anything themselves.
 
-Because Poooof tracks the repo's latest commit (no pinned `version`), **every merge to `main` is a release.**
-If you build features as workstreams (WIP stays on stream branches, only finished work merges to `main`),
-`main` stays clean and auto-update users only ever get deliberate, releasable versions — no half-done work.
+Poooof ships releases by **bumping the `version` field in `plugins/poooof/.claude-plugin/plugin.json`** (and the
+Codex manifest) — that bump is what auto-update users receive and what the `⬆ poooof` nudge compares against, so
+**remember to bump it on every release.** Keep WIP on stream branches and merge only finished work to `main`, so
+each version bump is a deliberate, releasable state — no half-done work reaches anyone.
 
 ## What's inside
 
@@ -111,6 +112,7 @@ poooof/
         │   └── claude-project-template/ # the framework template it copies
         ├── start-stream/SKILL.md       # poooof:start-stream
         ├── finish-stream/SKILL.md      # poooof:finish-stream
+        ├── check-streams/SKILL.md      # poooof:check-streams
         └── convert-to-bare/SKILL.md    # poooof:convert-to-bare
 ```
 
@@ -132,13 +134,18 @@ Two commands run the whole lifecycle (no git knowledge needed):
   `STATUS.md`, and registers it in `WORKSTREAMS.md`.
 - `poooof:finish-stream [name]` — merges it (PR by default), promotes its decisions into `DECISIONS.md`,
   and cleans up the folder + branch + dashboard row.
+- `poooof:check-streams` — lists any file edited by 2+ active streams, so same-file merge conflicts are
+  caught *before* you merge (worktrees prevent live collisions, not merge conflicts). Auto-run by
+  `finish-stream` when other streams are active.
 - `poooof:convert-to-bare [path]` — **adopt the framework in an existing project**: safely converts a
   normal flat repo to this bare-repo layout (build-new-then-swap with a full backup; carries over `.env` and
   all local-only files; audits branches for unmerged work before discarding). After it runs, the two skills
   above work in that project.
 
 `WORKSTREAMS.md` (on `main`) is the dashboard of what's in flight and who owns each stream — every agent reads
-it first, so two sessions never collide. See a scaffolded project's `TEAM-WORKFLOW.md` for the full guide.
+it first, so two sessions never grab the same stream. (Worktrees keep streams from overwriting each other
+*while working* — but two streams that edit the *same file* still conflict at merge; run `poooof:check-streams`
+before merging to catch that early.) See a scaffolded project's `TEAM-WORKFLOW.md` for the full guide.
 
 **Root signpost:** a bare-repo project also gets a tiny `CLAUDE.md` + `AGENTS.md` at its *root* (next to
 `.bare/` and `main/`). If you open an editor/agent at the root instead of inside `main/`, the signpost routes

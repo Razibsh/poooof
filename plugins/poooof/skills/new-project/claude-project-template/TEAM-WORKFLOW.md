@@ -99,7 +99,14 @@ every PR. Then "are the tests green?" is answered for you, not something anyone 
 The simple default is **one task at a time**: one branch, one folder. But you can run **several tasks at
 once** — different chats/agents each building a different feature. The tool that makes this safe is a
 **worktree**: another folder holding the same project, locked to its own branch. One chat per folder = they
-physically cannot collide.
+can't overwrite each other *while working*.
+
+> **What worktrees do and don't protect.** Separate folders + branches mean two agents never trample each
+> other's working files in real time — that part is guaranteed. They do **not** prevent **merge conflicts**:
+> if two streams change the *same file*, git makes you resolve it when the second one merges. Streams merge
+> cleanly only when they touch **different files**. So pick parallel tasks that don't overlap (e.g. one
+> frontend + one backend, not two features that both edit a shared "hub" file), and run
+> **`poooof:check-streams`** before merging to catch same-file overlap early instead of at merge time.
 
 **The layout (bare repo).** A Poooof project is one folder containing the git engine plus one folder per
 branch:
