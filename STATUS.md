@@ -2,6 +2,9 @@
 
 **Last updated:** 2026-06-28 — v1.2.0: onboarding auto-update. Every scaffolded project now ships `main/.claude/settings.json` (registers the poooof marketplace + enables the plugin + `autoUpdate`), so collaborators who open a project and trust the folder get the framework auto-installed and kept current. v1.1.0 (below): doc-sync automation + parallel-stream conflict safety.
 
+## Done this session (v1.3.0)
+- New skill `poooof:update` — one-command update: refreshes the marketplace catalog then updates the plugin (`claude plugin marketplace update poooof && claude plugin update poooof@poooof`; Codex: `codex plugin marketplace upgrade poooof`), then tells the operator to restart. `disable-model-invocation: true` (user-invoked). Solves the "/plugin opens a menu instead of updating" confusion. Descriptions + README "Stay up to date" + command lists updated.
+
 ## Done this session (v1.2.1)
 - Nudge message now spells out both steps (`/plugin marketplace update poooof` then `/plugin update poooof@poooof`) — the catalog can be stale, so "update plugin" alone reads an old version and reports "nothing new." Learned the hard way during a live update.
 

@@ -14,7 +14,7 @@ Poooof is a plugin for **[Claude Code](https://claude.com/claude-code)** *and* *
 ```
 
 This one plugin gives you every command, all namespaced `poooof:` — `poooof:new-project`,
-`poooof:start-stream`, `poooof:finish-stream`, `poooof:check-streams`, `poooof:convert-to-bare`.
+`poooof:start-stream`, `poooof:finish-stream`, `poooof:check-streams`, `poooof:update`, `poooof:convert-to-bare`.
 
 **👉 Turn on auto-update now (do this once — recommended).** Then you get every new version automatically at
 startup, and never have to update by hand again:
@@ -55,12 +55,13 @@ That said, the framework pairs nicely with a couple of optional add-ons — inst
 
 There are two ways to get new versions. Poooof declares a `version` in `plugin.json`, so **a new version ships when that number is bumped** (releases are deliberate, not every commit) — the only question is whether you pull it manually or let Claude Code do it. When a newer version is out and you haven't pulled it, Poooof shows a one-line `⬆ poooof X.Y.Z` nudge at session start.
 
-**Option A — manual (default).** Whenever you want the latest, run:
+**Option A — manual (default).** When the nudge appears (or any time), just run:
 
 ```
-/plugin marketplace update poooof
-/plugin update poooof@poooof
+/poooof:update
 ```
+
+That one command refreshes the catalog **and** updates the plugin in a single step, then tells you to restart — no menus. (Under the hood it runs `claude plugin marketplace update poooof && claude plugin update poooof@poooof`; you can run that shell line directly if you prefer. Note: typing `/plugin …` with a slash opens the interactive manager instead of updating — use `/poooof:update` or the shell command.)
 
 **Option B — automatic (set once, recommended).** Turn on auto-update for this marketplace and Claude Code will fetch + install new versions for you on startup:
 
@@ -119,6 +120,7 @@ poooof/
         ├── start-stream/SKILL.md       # poooof:start-stream
         ├── finish-stream/SKILL.md      # poooof:finish-stream
         ├── check-streams/SKILL.md      # poooof:check-streams
+        ├── update/SKILL.md             # poooof:update
         └── convert-to-bare/SKILL.md    # poooof:convert-to-bare
 ```
 
