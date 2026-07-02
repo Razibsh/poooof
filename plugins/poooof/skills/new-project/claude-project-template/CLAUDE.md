@@ -25,6 +25,11 @@
 1. **Start of every session:** read `WORKSTREAMS.md` first (what parallel streams are in flight + who owns
    them). If you're in a stream worktree, read that stream's `STATUS.md` next (where it stands). Then read
    `ROADMAP.md` and work ONLY on the current phase of the stream you own.
+   If persistent-memory context (e.g. **claude-mem**) appears at session start, check it against
+   `STATUS.md` and `WORKSTREAMS.md` before other work: if memory shows work, decisions, or an
+   unfinished task the docs don't reflect — likely a crashed or abruptly-ended session — say so and
+   reconcile the docs first (per rule 8: against `git log` and reality — memory can be stale or
+   wrong), visibly, not silently. (No memory plugin installed → nothing to check; skip.)
 2. **Idea capture is automatic and unprompted:** whenever the operator mentions an idea, wish,
    or future feature in conversation — even casually, even mid-task — append it to `BACKLOG.md`
    immediately (one line + date) and say it's captured. They should never have to say "note this".
@@ -49,6 +54,11 @@
    settled, a constraint discovered), append one dated line to the `## Decision log` in the current stream's
    `STATUS.md` — automatically, without being asked. On merge, promote the locked/cross-cutting ones into
    `DECISIONS.md`. Nothing important should live only in the chat.
+10. **Chat and automatic memory are recovery nets, not the system of record.** Before a session
+    ends, every durable fact must live in its typed home: a decision → `DECISIONS.md` (or the
+    stream's decision log), current state → `STATUS.md`, an idea → `BACKLOG.md`, a repeatable
+    procedure → `RUNBOOK.md` (if the project has one; otherwise a note in `docs/`). If it matters
+    and it only exists in the conversation, it isn't saved.
 
 ## Working with other agents / a teammate
 
@@ -106,6 +116,7 @@ dashboard are described in `TEAM-WORKFLOW.md` → "Working in parallel".
 - `BACKLOG.md` — everything deferred. Nothing gets forgotten.
 - `STATUS.md` — latest session handoff: what's done, verified, and next. Overwritten each session.
 - `TEAM-WORKFLOW.md` — how a small team + multiple agents collaborate here.
+- `RUNBOOK.md` — repeatable operational procedures (ops projects; absent otherwise).
 - `Ref/` — read-only source of product truth (research, spec, mockups), if the project has one.
 - `docs/` — per-feature specs (spec → plan → verify) for non-trivial features.
 > FILL IN: add any project-specific reference folders (e.g. a read-only "gold" reference from a v1).
