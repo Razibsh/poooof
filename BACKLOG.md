@@ -22,4 +22,4 @@ Deferred ideas for the framework itself. Nothing gets forgotten. One line + date
   folder has no `node_modules` (deps aren't shared), so `npm ci` fails until installed there. `start-stream`
   could offer to run install (or symlink/reflink `node_modules` from `main/`) per new stream. Generalize beyond
   node (Python venv, etc.) or keep it node-only + a one-liner in the skill. Low/medium priority.
-- 2026-07-03: README ~line 100 quotes the update nudge as `/plugin update poooof@poooof` while line ~89 warns the slash form opens the manager — verify actual nudge text and align the README.
+- 2026-07-03: Update-nudge text in `hooks/check-update.js` (~line 116) tells users to run `/plugin marketplace update` + `/plugin update` — but README warns the slash form opens the interactive manager and says to use `/poooof:update`. Fix the nudge string to recommend `/poooof:update`, and align the README quote of it (~line 96).

@@ -76,7 +76,7 @@ it never asks what the repo already answers.
 
 ### 3. Install files in three tiers
 
-Work from the template — stamp every doc this skill writes or merges: line 2, immediately after
+Work from the template — stamp every doc this skill writes, copies, or merges: line 2, immediately after
 the H1, replacing `<!-- poooof X.Y.Z -->` with `<!-- poooof $PVER -->` (including a Tier-C merged
 CLAUDE.md/AGENTS.md).
 
@@ -120,7 +120,7 @@ CLAUDE.md/AGENTS.md).
    `$PVER`. All stamps already `== $PVER` → say "already on the current framework version" and
    STOP (no-op). No stamps at all (legacy route from Step 0) → skip this equality check and
    proceed with the upgrade. Any stamp NEWER than `$PVER` → STOP and tell the operator to update
-   the poooof plugin first (`poooof:update`), then re-run.
+   the poooof plugin first (`poooof:update`), then re-run. (a literal `X.Y.Z` stamp counts as stale, not newer).
 2. For each framework-managed doc present in the project, merge the CURRENT template's framework
    boilerplate in: refresh the standard sections (numbered workflow rules, header guidance
    blockquotes, TEAM-WORKFLOW.md body, WORKSTREAMS.md header/format) while preserving ALL

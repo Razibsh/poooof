@@ -3,7 +3,7 @@
 **Last updated:** 2026-07-03 — v1.4.0 released: poooof:adopt (install/upgrade framework in existing projects), version stamps, claude-mem-aware template rules, RUNBOOK.md for ops projects.
 
 ## Done this session (v1.4.0)
-- v1.4.0 implemented: new skill `poooof:adopt` (install/upgrade framework in existing projects), version stamps (`<!-- poooof X.Y.Z -->`) on framework-managed docs, claude-mem-aware template rules in CLAUDE.md and ROADMAP, new `RUNBOOK.md` for ops-shaped projects, README + plugin manifests updated, marketplace description aligned.
+- v1.4.0 implemented: new skill `poooof:adopt` (install/upgrade framework in existing projects), version stamps (`<!-- poooof X.Y.Z -->`) on framework-managed docs, claude-mem-aware template rules in CLAUDE.md, new `RUNBOOK.md` for ops-shaped projects, README + plugin manifests updated, marketplace description aligned.
 
 ## Previously done
 - Bare-repo project layout in `new-project` scaffolding (`.bare/` + `main/` + per-stream folders).

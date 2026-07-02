@@ -54,7 +54,7 @@ Scaffold a brand-new project from the bundled framework template, then get it to
    don't edit it during the interview.) All project work and docs live under `main/` (and, later, sibling stream
    folders). The root signpost is a loose local file (the bare root isn't a git working tree) — it tells an
    agent that opens at the root to `cd main` and follow that folder's rules. This requires git ≥ 2.42 for
-   `worktree add --orphan` (verified on git 2.50.1). (Codex: read the version from `$SKILL_DIR/../../.codex-plugin/plugin.json` instead, and use `sed -i` without `''` on Linux.)
+   `worktree add --orphan` (verified on git 2.50.1). (Codex: read the version from `$SKILL_DIR/../../.codex-plugin/plugin.json` instead. On Linux — either tool — use `sed -i` without the `''`.)
 
 4. **First commit (inside `main/`).**
    ```
