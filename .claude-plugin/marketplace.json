@@ -8,7 +8,7 @@
     {
       "name": "poooof",
       "source": "./plugins/poooof",
-      "description": "Lightweight project framework: scaffold new projects, adopt or upgrade the framework in existing repos, run features in parallel with git-worktree streams, catch same-file merge overlap before it bites. Commands are poooof:new-project / adopt / start-stream / finish-stream / check-streams / update / convert-to-bare."
+      "description": "Lightweight project framework: scaffold new projects, adopt or upgrade the framework in existing repos, run features in parallel with git-worktree streams, and catch same-file merge overlap before it bites. Commands are poooof:new-project / adopt / start-stream / finish-stream / check-streams / update / convert-to-bare."
     }
   ]
 }
