@@ -38,6 +38,7 @@ Scaffold a brand-new project from the bundled framework template, then get it to
    git -C "<destination>" worktree add --orphan -b main main
    cp -R "$TEMPLATE/." "<destination>/main/"
    rm -f "<destination>/main/.DS_Store"
+   rm -f "<destination>/main/RUNBOOK.md"   # ops-projects file; installed by poooof:adopt when relevant
    # Stamp the framework version into the copied docs (single source of truth: the plugin manifest).
    PVER=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json" | head -1)
    [ -n "$PVER" ] || { echo "poooof: could not read plugin version — leaving X.Y.Z stamps in place" >&2; }
