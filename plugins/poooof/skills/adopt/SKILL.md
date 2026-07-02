@@ -39,7 +39,7 @@ before committing.
    `git rev-parse --show-toplevel`. Not a git repo → STOP: tell the operator to `git init` first
    (if the project doesn't exist yet, `poooof:new-project` is the right tool instead).
    All git commands in this skill run as `git -C "<docdir>"` — never rely on the current directory.
-2. Detect mode: `grep -l '<!-- poooof ' <docdir>/*.md 2>/dev/null`.
+2. Detect mode: `grep -l '<!-- poooof ' <docdir>/*.md 2>/dev/null`. (The grep may also match `AGENTS.md` when it's a symlink to CLAUDE.md — fine for detection; never stamp or edit the symlink itself.)
    - Stamps found → **UPGRADE MODE** (below).
    - No stamps but the docdir already has 3+ of the framework-managed docs (not counting
      `CLAUDE.md` and `RUNBOOK.md`, which many non-poooof projects have) → this is a pre-stamp
@@ -81,7 +81,7 @@ the H1, replacing `<!-- poooof X.Y.Z -->` with `<!-- poooof $PVER -->` (includin
 CLAUDE.md/AGENTS.md).
 
 - **Tier A — straight copies** (only if the file does not already exist): `TEAM-WORKFLOW.md`,
-  `WORKSTREAMS.md`. For `.gitignore`: append template entries the project lacks (never remove
+  `WORKSTREAMS.md`. For `.gitignore`: if absent, copy; if present, append template entries the project lacks (never remove
   existing lines). For `.claude/settings.json`: if absent, copy; if present, MERGE — add the
   `poooof` marketplace under `extraKnownMarketplaces` and `poooof@poooof: true` under
   `enabledPlugins`, preserving everything else in the file.
