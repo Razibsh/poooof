@@ -1,4 +1,5 @@
 # Decisions (locked — don't re-litigate; changes require explicit discussion)
+<!-- poooof X.Y.Z -->
 
 > Every meaningful technical or product choice goes here with its *reason*. The reason matters
 > more than the decision — it's what stops you (or an agent) from "improving" things back to the

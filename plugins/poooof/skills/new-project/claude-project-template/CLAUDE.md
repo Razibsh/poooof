@@ -1,7 +1,9 @@
 # <PROJECT NAME>
+<!-- poooof X.Y.Z -->
 
 <!-- This is the single most important file. Every agent reads it first.
-     Fill in every `> FILL IN` block below, then delete the HTML comments. -->
+     Fill in every `> FILL IN` block below, then delete the HTML comments —
+     except the poooof version-stamp comment on line 2, which stays. -->
 
 ## What this is
 

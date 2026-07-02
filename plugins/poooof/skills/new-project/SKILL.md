@@ -38,6 +38,10 @@ Scaffold a brand-new project from the bundled framework template, then get it to
    git -C "<destination>" worktree add --orphan -b main main
    cp -R "$TEMPLATE/." "<destination>/main/"
    rm -f "<destination>/main/.DS_Store"
+   # Stamp the framework version into the copied docs (single source of truth: the plugin manifest).
+   PVER=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' "${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json" | head -1)
+   [ -n "$PVER" ] || { echo "poooof: could not read plugin version — leaving X.Y.Z stamps in place" >&2; }
+   [ -n "$PVER" ] && for f in "<destination>/main/"*.md; do [ -L "$f" ] || sed -i '' "s/<!-- poooof X\.Y\.Z -->/<!-- poooof ${PVER} -->/" "$f"; done
    # Root signpost: routes any agent opened at the bare-repo root into main/ (or a stream).
    cp "${CLAUDE_PLUGIN_ROOT}/skills/new-project/bare-root-signpost.md" "<destination>/CLAUDE.md"
    ln -sf CLAUDE.md "<destination>/AGENTS.md"
@@ -49,7 +53,7 @@ Scaffold a brand-new project from the bundled framework template, then get it to
    don't edit it during the interview.) All project work and docs live under `main/` (and, later, sibling stream
    folders). The root signpost is a loose local file (the bare root isn't a git working tree) — it tells an
    agent that opens at the root to `cd main` and follow that folder's rules. This requires git ≥ 2.42 for
-   `worktree add --orphan` (verified on git 2.50.1).
+   `worktree add --orphan` (verified on git 2.50.1). (Codex: read the version from `$SKILL_DIR/../../.codex-plugin/plugin.json` instead, and use `sed -i` without `''` on Linux.)
 
 4. **First commit (inside `main/`).**
    ```
@@ -64,7 +68,7 @@ Scaffold a brand-new project from the bundled framework template, then get it to
    ```
    Use a slug for `<repo-name>` (lowercase, hyphens). If `gh` is missing or not authenticated, say so plainly and continue local-only — don't block the scaffold.
 
-6. **Interview to fill in CLAUDE.md.** Read `<destination>/main/CLAUDE.md`. It contains `> FILL IN` blocks: *What this is*, *Architecture / stack*, *Product rules*, *Testing*. Ask the operator about each — conversationally, one topic at a time, not as a wall of questions — and replace each block with their answers in plain language. Replace the `<PROJECT NAME>` title. Delete the HTML `<!-- ... -->` guidance comments as you fill each block. **Leave the numbered workflow-rules section unchanged** — those are the standard rules.
+6. **Interview to fill in CLAUDE.md.** Read `<destination>/main/CLAUDE.md`. It contains `> FILL IN` blocks: *What this is*, *Architecture / stack*, *Product rules*, *Testing*. Ask the operator about each — conversationally, one topic at a time, not as a wall of questions — and replace each block with their answers in plain language. Replace the `<PROJECT NAME>` title. Delete the HTML `<!-- ... -->` guidance comments as you fill each block — but **keep the `<!-- poooof … -->` version stamp on line 2**; it's how the framework tracks doc versions. **Leave the numbered workflow-rules section unchanged** — those are the standard rules.
 
 7. **Draft ROADMAP Phase 1.** From the interview, replace the ROADMAP placeholders: name Phase 1 and give it 3–6 concrete first tasks, each with a real, observable `verify:` criterion (a test, a real run, a visible result — not "should work"). Keep Phase 2+ as rough one-line candidates. Don't over-plan far phases.
 

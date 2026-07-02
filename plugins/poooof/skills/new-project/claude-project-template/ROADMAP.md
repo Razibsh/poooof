@@ -1,4 +1,5 @@
 # <PROJECT NAME> — Roadmap
+<!-- poooof X.Y.Z -->
 
 > Read this first every session. Work only on the current phase. New ideas → `BACKLOG.md`.
 

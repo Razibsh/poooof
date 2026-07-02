@@ -1,4 +1,5 @@
 # Backlog
+<!-- poooof X.Y.Z -->
 
 > Every idea lands here the moment it comes up — captured by the agent automatically, without
 > being asked. Nothing gets built out of roadmap order; nothing gets forgotten.

@@ -1,4 +1,5 @@
 # Status — session handoff
+<!-- poooof X.Y.Z -->
 
 > The committed handoff for **this stream** (this worktree/branch). Two halves: the **current-state**
 > blocks below are *overwritten* every session so they always show where the stream stands; the

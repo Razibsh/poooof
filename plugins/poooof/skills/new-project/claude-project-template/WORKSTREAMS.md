@@ -1,4 +1,5 @@
 # Workstreams — what's in flight right now
+<!-- poooof X.Y.Z -->
 
 > The single dashboard of every active parallel workstream. **Read this FIRST every session.** One row per
 > live stream. Updated only when a stream starts or finishes (rare → safe from collisions between sessions).

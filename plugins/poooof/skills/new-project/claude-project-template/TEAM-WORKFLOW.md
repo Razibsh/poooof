@@ -1,4 +1,5 @@
 # Team Workflow — humans + AI agents on one repo
+<!-- poooof X.Y.Z -->
 
 How a small team works on the same project without stepping on each other or breaking the work —
 whether the "team" is you + a partner, you + Codex, or all of you and Claude Code at once.
