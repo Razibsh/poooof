@@ -2,7 +2,7 @@
 
 > Type a name, and *poof* — a fully-structured project appears.
 
-Poooof is a plugin for **[Claude Code](https://claude.com/claude-code)** *and* **[Codex CLI](https://developers.openai.com/codex)** that scaffolds a brand-new project from a reusable framework template. Run one command, answer a few questions, and you get a project that's already wired up the way good projects should be — a `CLAUDE.md` your agent reads first, a phased `ROADMAP.md`, status tracking, decision log, and a clean git history — ready to start building Phase 1. The same repo serves both tools from one source of truth.
+Poooof is a plugin for **[Claude Code](https://claude.com/claude-code)** *and* **[Codex CLI](https://developers.openai.com/codex)** that scaffolds a brand-new project from a reusable framework template — or adopts the same framework into a project you already have. Run one command, answer a few questions, and you get a project that's already wired up the way good projects should be — a `CLAUDE.md` your agent reads first, a phased `ROADMAP.md`, status tracking, decision log, and a clean git history — ready to start building Phase 1. The same repo serves both tools from one source of truth.
 
 ## Install (one time)
 
@@ -14,7 +14,8 @@ Poooof is a plugin for **[Claude Code](https://claude.com/claude-code)** *and* *
 ```
 
 This one plugin gives you every command, all namespaced `poooof:` — `poooof:new-project`,
-`poooof:start-stream`, `poooof:finish-stream`, `poooof:check-streams`, `poooof:update`, `poooof:convert-to-bare`.
+`poooof:adopt`, `poooof:start-stream`, `poooof:finish-stream`, `poooof:check-streams`,
+`poooof:update`, `poooof:convert-to-bare`.
 
 **👉 Turn on auto-update now (do this once — recommended).** Then you get every new version automatically at
 startup, and never have to update by hand again:
@@ -42,6 +43,25 @@ That's it. From now on, `/poooof:new-project` (and the other `poooof:` commands)
 
 It asks for a project name and where to create it, copies the template, sets up git, optionally creates a GitHub repo, then interviews you to fill in the project's context and draft a first-phase plan. The original template is **never touched** — every run copies *from* it into a fresh folder.
 
+## Already have a project? Adopt the framework
+
+```
+/poooof:adopt
+```
+
+Run it inside any existing repo. It reads the project first (code, git history, docs), interviews
+you to confirm what it found, and installs the framework docs **describing the project as it
+actually is** — done work pre-checked in the roadmap, visible decisions seeded into DECISIONS.md.
+Anything you already have (a `CLAUDE.md`, `.claude/settings.json`) is merged, never overwritten,
+and every change is shown as a diff before it's committed. Ops-shaped projects (servers, deploys,
+infra) additionally get a `RUNBOOK.md` for repeatable procedures.
+
+The same command also **upgrades**: framework docs carry a version stamp, and when the template
+has improved since a project was scaffolded or adopted, `/poooof:adopt` refreshes the framework
+sections while preserving all project content — so template improvements reach existing
+projects too. At the end it offers an optional conversion to the parallel-streams layout
+(`poooof:convert-to-bare`).
+
 ## Works standalone — optional companions
 
 Poooof needs **nothing but Claude Code (or Codex)** — `/new-project` runs end to end with no other plugins installed, and the template it copies references no external skills. (`gh` is the only extra, and if it's missing the scaffold just continues local-only.)
@@ -50,6 +70,7 @@ That said, the framework pairs nicely with a couple of optional add-ons — inst
 
 - **[Superpowers](https://github.com/obra/superpowers)** — adds spec → plan → execute discipline (brainstorming, planning, TDD, structured debugging). The framework's "write a short spec before non-trivial features" rule feels natural with it.
 - **[Context7 MCP](https://github.com/upstash/context7)** — gives your agent up-to-date library/framework docs instead of relying on training data.
+- **[claude-mem](https://github.com/thedotmack/claude-mem)** — persistent memory across sessions. The framework's session-start rule uses its recalled context to spot a crashed or unfinished session and reconcile `STATUS.md`; the docs stay the curated source of record, with memory as the recovery net.
 
 ## Stay up to date
 
@@ -117,6 +138,7 @@ poooof/
         │   ├── SKILL.md                # poooof:new-project
         │   ├── bare-root-signpost.md   # root signpost dropped into bare-repo projects
         │   └── claude-project-template/ # the framework template it copies
+        ├── adopt/SKILL.md              # poooof:adopt
         ├── start-stream/SKILL.md       # poooof:start-stream
         ├── finish-stream/SKILL.md      # poooof:finish-stream
         ├── check-streams/SKILL.md      # poooof:check-streams
@@ -145,10 +167,10 @@ Two commands run the whole lifecycle (no git knowledge needed):
 - `poooof:check-streams` — lists any file edited by 2+ active streams, so same-file merge conflicts are
   caught *before* you merge (worktrees prevent live collisions, not merge conflicts). Auto-run by
   `finish-stream` when other streams are active.
-- `poooof:convert-to-bare [path]` — **adopt the framework in an existing project**: safely converts a
-  normal flat repo to this bare-repo layout (build-new-then-swap with a full backup; carries over `.env` and
-  all local-only files; audits branches for unmerged work before discarding). After it runs, the two skills
-  above work in that project.
+- `poooof:convert-to-bare [path]` — give an existing repo the parallel-streams **layout**: safely
+  converts a normal flat repo to this bare-repo layout (build-new-then-swap with a full backup;
+  carries over `.env` and all local-only files; audits branches for unmerged work before
+  discarding). For the framework **docs** in an existing project, use `poooof:adopt`.
 
 `WORKSTREAMS.md` (on `main`) is the dashboard of what's in flight and who owns each stream — every agent reads
 it first, so two sessions never grab the same stream. (Worktrees keep streams from overwriting each other
@@ -170,7 +192,9 @@ This repo is the single source of truth (the "workshop"). To change the template
 3. Commit and push to GitHub.
 4. Everyone gets it on their next update — `/plugin update` (Claude Code) or `codex plugin marketplace upgrade poooof` (Codex).
 
-Editing a project created *by* the command never affects the template — the copy only ever goes one direction, template → new project.
+Editing a project created *by* the command never affects the template — the copy goes one
+direction, template → project. To pull template improvements *into* an existing project, run
+`/poooof:adopt` there — it refreshes the framework sections and shows you the diff.
 
 ## License
 
