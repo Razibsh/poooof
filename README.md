@@ -4,6 +4,18 @@
 
 Poooof is a plugin for **[Claude Code](https://claude.com/claude-code)** *and* **[Codex CLI](https://developers.openai.com/codex)** that scaffolds a brand-new project from a reusable framework template — or adopts the same framework into a project you already have. Run one command, answer a few questions, and you get a project that's already wired up the way good projects should be — a `CLAUDE.md` your agent reads first, a phased `ROADMAP.md`, status tracking, decision log, and a clean git history — ready to start building Phase 1. The same repo serves both tools from one source of truth.
 
+## Why this exists
+
+Hi, I'm [Razi](https://github.com/Razibsh) 👋 — I'm not a real developer. I'm a *vibe coder*: I build and run
+real projects by working with Claude Code and Codex, and the agents write the code. What kept breaking wasn't
+the code — it was everything around it: a new session forgetting what the last one decided, ideas mentioned in
+chat and never seen again, two sessions stepping on each other's work, me not remembering where a project even
+stood. Poooof is the framework I built to fix that for myself: light, plain-language, nothing to learn — the
+structure lives in a handful of markdown files your agent maintains *for* you, so decisions stay decided, ideas
+land in a backlog, every session picks up exactly where the last one stopped, and parallel work doesn't
+collide. If you drive your projects by talking to an agent rather than writing code yourself, this was built
+for you.
+
 ## Install (one time)
 
 **Claude Code:**
