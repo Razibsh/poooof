@@ -1,7 +1,7 @@
 {
   "name": "poooof",
   "version": "1.4.0",
-  "description": "A lightweight project framework: scaffold new projects (new-project), adopt or upgrade the framework in existing repos (adopt), run several features in parallel with git-worktree streams (start-stream / finish-stream), catch same-file merge overlap before it bites (check-streams), update itself in one step (update), and convert a repo to the parallel-streams layout (convert-to-bare).",
+  "description": "A lightweight project framework: scaffold new projects (new-project), adopt or upgrade the framework in existing repos (adopt), run several features in parallel with git-worktree streams (start-stream / finish-stream), catch same-file merge overlap before it bites (check-streams), save a clean, verified session handoff before clearing the chat (handoff), update itself in one step (update), and convert a repo to the parallel-streams layout (convert-to-bare).",
   "author": {
     "name": "Razibsh",
     "email": "shyfttothetop@gmail.com"

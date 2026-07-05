@@ -27,7 +27,7 @@ for you.
 
 This one plugin gives you every command, all namespaced `poooof:` — `poooof:new-project`,
 `poooof:adopt`, `poooof:start-stream`, `poooof:finish-stream`, `poooof:check-streams`,
-`poooof:update`, `poooof:convert-to-bare`.
+`poooof:handoff`, `poooof:update`, `poooof:convert-to-bare`.
 
 **👉 Turn on auto-update now (do this once — recommended).** Then you get every new version automatically at
 startup, and never have to update by hand again:
@@ -154,6 +154,7 @@ poooof/
         ├── start-stream/SKILL.md       # poooof:start-stream
         ├── finish-stream/SKILL.md      # poooof:finish-stream
         ├── check-streams/SKILL.md      # poooof:check-streams
+        ├── handoff/SKILL.md            # poooof:handoff
         ├── update/SKILL.md             # poooof:update
         └── convert-to-bare/SKILL.md    # poooof:convert-to-bare
 ```
@@ -194,6 +195,18 @@ before merging to catch that early.) See a scaffolded project's `TEAM-WORKFLOW.m
 the agent into the right worktree — so it always works in the correct folder.
 
 These commands ship in the same `poooof` plugin (see **Install** above) — no extra install.
+
+## Save before you clear — `poooof:handoff`
+
+Long sessions fill up the context window, and the natural move is to clear the chat and continue fresh. The
+worry is always the same: *did everything important get saved?* `poooof:handoff` answers it once and for all.
+Run it before you clear, and it does the framework's end-of-session ritual in one shot — refreshes `STATUS.md`
+(what was done, what's **verified**, what's next), routes any new decisions to `DECISIONS.md`, ideas to
+`BACKLOG.md`, and roadmap check-offs to `ROADMAP.md`, commits the paperwork, confirms your memory plugin (if
+any) captured the session, then prints exactly what it saved and where — ending with a clear **✅ Safe to
+clear**. (Clearing the chat never touches files on disk anyway; the command just guarantees every durable fact
+made it *into* a file first.) Next session, open a fresh chat and say "resume" — `STATUS.md` picks you up from
+exactly where you stopped.
 
 ## For the author — how to improve the framework
 
