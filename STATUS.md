@@ -1,26 +1,26 @@
 # Status — session handoff
 
-**Last updated:** 2026-07-03 — v1.4.0 released: poooof:adopt (install/upgrade framework in existing projects), version stamps, claude-mem-aware template rules, RUNBOOK.md for ops projects.
+**Last updated:** 2026-07-05 — added `poooof:handoff` command; wired the official Linear MCP into Claude Code (user scope); captured the deferred "optional Linear mode" framework idea.
 
-## Done this session (v1.4.0)
-- v1.4.0 implemented: new skill `poooof:adopt` (install/upgrade framework in existing projects), version stamps (`<!-- poooof X.Y.Z -->`) on framework-managed docs, claude-mem-aware template rules in CLAUDE.md, new `RUNBOOK.md` for ops-shaped projects, README + plugin manifests updated, marketplace description aligned.
-
-## Previously done
-- Bare-repo project layout in `new-project` scaffolding (`.bare/` + `main/` + per-stream folders).
-- New `WORKSTREAMS.md` dashboard + per-stream `STATUS.md` with append-only decision log (template).
-- Rewrote TEAM-WORKFLOW "Working in parallel" + CLAUDE.md rules (dashboard-first sessions, decision logging, confirm-first worktrees, cleanup-on-merge).
-- New `workstream` plugin with `start-stream` + `finish-stream` skills; registered in Claude + Codex marketplaces.
-- README documents the workstream model + install.
+## Done this session
+- New skill **`poooof:handoff`** (`plugins/poooof/skills/handoff/SKILL.md`): user-invoked "save before you clear" command. Runs the end-of-session ritual in one shot — refresh `STATUS.md`, route new decisions/ideas/roadmap check-offs to their typed homes, commit the paperwork, confirm the memory plugin captured the session, then print what was saved + where and an explicit "✅ safe to clear." Committed on `main` (0d2a0b7).
+- Docs updated for the new command: both `plugin.json` manifests, `marketplace.json`, README (install list + skills tree + a dedicated "Save before you clear" section).
+- Wired the **official Linear MCP** at user scope (`claude mcp add --transport sse linear https://mcp.linear.app/sse -s user`) — OAuth, no API key stored. Shows "Failed to connect" until the browser auth is completed via `/mcp`.
+- Captured **"optional Linear mode"** as a deferred framework idea in `BACKLOG.md` (design after Razi's personal Linear trial).
 
 ## Verified
-- 4 end-to-end scenarios passed: fresh build-shape adopt with CLAUDE.md merge, ops-shape adopt, upgrade + legacy pre-stamp routing + no-op re-run, new-project regression.
+- JSON manifests (both plugin.json, marketplace.json) parse clean.
+- `handoff/SKILL.md` frontmatter well-formed (name/description/disable-model-invocation/allowed-tools).
+- Feature committed to `main` (0d2a0b7); working tree clean apart from this handoff paperwork.
+- NOT yet verified: the handoff command executing as an installed slash command (it ships from the working repo → needs a release + `/poooof:update` before it's live in other projects).
 
 ## Next
-- Push release.
-- Run /poooof:adopt on the two June-2026 projects and the ops project.
+- Finish Linear browser auth: `/mcp` → linear → log in. Then start the personal trial (one Linear project per real project; split model — Linear = backlog/ideas, ROADMAP/STATUS stay in-repo).
+- Decide whether to cut a poooof release (patch/minor) so `poooof:handoff` propagates to installed projects — push is not done yet, awaiting Razi's go-ahead.
+- After ~2–4 weeks of Linear use, design the "optional Linear mode" framework feature from real usage notes.
 
 ## Open / blocked
-- None.
+- Linear MCP connection pending browser OAuth (expected).
 
 ## Docs in sync?
-- yes — spec + plan in docs/superpowers/, BACKLOG.md updated.
+- yes — feature + docs committed together (0d2a0b7); BACKLOG.md updated; this STATUS.md is the session handoff.
