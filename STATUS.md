@@ -1,26 +1,27 @@
 # Status — session handoff
 
-**Last updated:** 2026-07-05 — added `poooof:handoff` command; wired the official Linear MCP into Claude Code (user scope); captured the deferred "optional Linear mode" framework idea.
+**Last updated:** 2026-07-05 — shipped `poooof:handoff` + self-organizing backlog (`poooof:tidy`); wired the official Linear MCP (auth pending); dogfooded tidy on this repo's own backlog.
 
 ## Done this session
-- New skill **`poooof:handoff`** (`plugins/poooof/skills/handoff/SKILL.md`): user-invoked "save before you clear" command. Runs the end-of-session ritual in one shot — refresh `STATUS.md`, route new decisions/ideas/roadmap check-offs to their typed homes, commit the paperwork, confirm the memory plugin captured the session, then print what was saved + where and an explicit "✅ safe to clear." Committed on `main` (0d2a0b7).
-- Docs updated for the new command: both `plugin.json` manifests, `marketplace.json`, README (install list + skills tree + a dedicated "Save before you clear" section).
-- Wired the **official Linear MCP** at user scope (`claude mcp add --transport sse linear https://mcp.linear.app/sse -s user`) — OAuth, no API key stored. Shows "Failed to connect" until the browser auth is completed via `/mcp`.
-- Captured **"optional Linear mode"** as a deferred framework idea in `BACKLOG.md` (design after Razi's personal Linear trial).
+- **`poooof:handoff`** (`skills/handoff/SKILL.md`): user-invoked "save before you clear" — runs the end-of-session ritual (refresh STATUS, route decisions/ideas/roadmap to their homes, tidy the backlog, confirm memory capture) and prints a "✅ safe to clear" green light. Commit 0d2a0b7.
+- **Self-organizing backlog + `poooof:tidy`** (`skills/tidy/SKILL.md`): template `BACKLOG.md` reshaped into dated, newest-first, area-tagged sections (📥 Inbox → 🔨 Promoted → ✅ Done); template `CLAUDE.md` rule 2 updated so capture inserts at top of Inbox and items move (never delete) on promote/ship. `poooof:tidy` re-sorts/dates/tags/dedupes and migrates an old flat backlog; non-destructive with an item-count check + diff before commit; also runs inside `poooof:handoff`. Commit 2cbcb78. Spec: `docs/superpowers/specs/2026-07-05-self-organizing-backlog-design.md`.
+- **Dogfooded** `tidy` on this repo's own backlog: flat 7-item list → 3-section format, 7 in / 7 out, the shipped "self-organizing" idea correctly moved to ✅ Done. Commit e99fd74.
+- **Linear MCP** added at user scope (SSE, OAuth, no key stored). Connection pending browser auth.
+- Docs updated across README + both plugin manifests + marketplace.json for both new commands.
 
 ## Verified
-- JSON manifests (both plugin.json, marketplace.json) parse clean.
-- `handoff/SKILL.md` frontmatter well-formed (name/description/disable-model-invocation/allowed-tools).
-- Feature committed to `main` (0d2a0b7); working tree clean apart from this handoff paperwork.
-- NOT yet verified: the handoff command executing as an installed slash command (it ships from the working repo → needs a release + `/poooof:update` before it's live in other projects).
+- JSON manifests parse; both new skills' frontmatter well-formed.
+- `tidy` ran for real on this repo's backlog: item count preserved (7→7), three sections present.
+- NOT yet verified: `handoff`/`tidy` as installed slash commands (ship from working repo → need a release + `/poooof:update` before live in other projects).
 
 ## Next
-- Finish Linear browser auth: `/mcp` → linear → log in. Then start the personal trial (one Linear project per real project; split model — Linear = backlog/ideas, ROADMAP/STATUS stay in-repo).
-- Decide whether to cut a poooof release (patch/minor) so `poooof:handoff` propagates to installed projects — push is not done yet, awaiting Razi's go-ahead.
-- After ~2–4 weeks of Linear use, design the "optional Linear mode" framework feature from real usage notes.
+- **Release** so `poooof:handoff` + `poooof:tidy` reach installed projects — version bump + push, awaiting Razi's go-ahead (suggest v1.5.0, new features). Not pushed yet.
+- **Apply to Razi's current project(s)** (Shyft / Airtable / desktop): run `poooof:tidy` on each repo's backlog (diff-first; Shyft = paying clients, do with Razi present) and add the tidy convention. Needs to be done *in* each repo — this session is the framework repo. Awaiting the project path.
+- **Linear trial**: finish `/mcp` → linear browser auth; then set up one Linear project for the current project + add a project-local "on capture, also create a Linear issue + append its ID" rule (kept out of the shared template until the trial proves worth paying for).
 
 ## Open / blocked
 - Linear MCP connection pending browser OAuth (expected).
+- Applying to other projects blocked on their repo path(s).
 
 ## Docs in sync?
-- yes — feature + docs committed together (0d2a0b7); BACKLOG.md updated; this STATUS.md is the session handoff.
+- yes — features + docs committed together; this STATUS.md current; backlog tidied.
