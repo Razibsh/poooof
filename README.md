@@ -27,7 +27,7 @@ for you.
 
 This one plugin gives you every command, all namespaced `poooof:` — `poooof:new-project`,
 `poooof:adopt`, `poooof:start-stream`, `poooof:finish-stream`, `poooof:check-streams`,
-`poooof:handoff`, `poooof:update`, `poooof:convert-to-bare`.
+`poooof:handoff`, `poooof:tidy`, `poooof:update`, `poooof:convert-to-bare`.
 
 **👉 Turn on auto-update now (do this once — recommended).** Then you get every new version automatically at
 startup, and never have to update by hand again:
@@ -155,6 +155,7 @@ poooof/
         ├── finish-stream/SKILL.md      # poooof:finish-stream
         ├── check-streams/SKILL.md      # poooof:check-streams
         ├── handoff/SKILL.md            # poooof:handoff
+        ├── tidy/SKILL.md               # poooof:tidy
         ├── update/SKILL.md             # poooof:update
         └── convert-to-bare/SKILL.md    # poooof:convert-to-bare
 ```
@@ -207,6 +208,18 @@ any) captured the session, then prints exactly what it saved and where — endin
 clear**. (Clearing the chat never touches files on disk anyway; the command just guarantees every durable fact
 made it *into* a file first.) Next session, open a fresh chat and say "resume" — `STATUS.md` picks you up from
 exactly where you stopped.
+
+## Keep the backlog readable — `poooof:tidy`
+
+A flat backlog rots into a wall of text. `BACKLOG.md` in a poooof project is **self-organizing** —
+the agent captures every idea as `- YYYY-MM-DD [area] idea — context`, newest on top, grouped by
+status (**📥 Inbox → 🔨 Promoted → ✅ Done**), and moves items down the lifecycle instead of
+deleting them. If it ever drifts — or you're adopting the framework into a project whose backlog is
+already a mess — run `poooof:tidy`: it re-sorts newest-first, dates and area-tags every item
+(inferring dates from git history when missing), de-duplicates, and migrates an old flat backlog
+into the clean format. It's **non-destructive** (only moves and annotates lines, never drops an
+idea) and shows you the diff before committing. The tidy pass also runs automatically inside
+`poooof:handoff`, so every save leaves the backlog clean.
 
 ## For the author — how to improve the framework
 

@@ -31,9 +31,12 @@
    reconcile the docs first (per rule 8: against `git log` and reality — memory can be stale or
    wrong), visibly, not silently. (No memory plugin installed → nothing to check; skip.)
 2. **Idea capture is automatic and unprompted:** whenever the operator mentions an idea, wish,
-   or future feature in conversation — even casually, even mid-task — append it to `BACKLOG.md`
-   immediately (one line + date) and say it's captured. They should never have to say "note this".
-   Do NOT build backlog items out of order.
+   or future feature in conversation — even casually, even mid-task — capture it to `BACKLOG.md`
+   immediately and say it's captured. They should never have to say "note this". Keep the backlog
+   self-organizing: insert at the **top of `## 📥 Inbox`** as `- YYYY-MM-DD [area] idea — context`
+   (newest first, always dated + area-tagged). When an item becomes a phase or ships, **move** its
+   line to `## 🔨 Promoted` / `## ✅ Done` with a dated arrow — never delete it. Run `/poooof:tidy`
+   if the file ever drifts. Do NOT build backlog items out of order.
 3. **Locked choices** live in `DECISIONS.md`. Don't re-litigate them; if one must change, discuss
    it explicitly and update the file with the new "why".
 4. **After completing work:** check off ROADMAP items and commit with clear, small, atomic messages.

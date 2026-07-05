@@ -48,6 +48,10 @@ new for it:
 - **Progress → `ROADMAP.md`**: check off any item whose verify criterion was genuinely observed this session.
 - **Repeatable procedure → `RUNBOOK.md`**: only if the project has one and this session established a new repeatable op.
 
+After routing, **tidy the backlog** if it drifted this session — apply the `poooof:tidy` rules to
+`BACKLOG.md` (dated, newest-first, grouped by status, area-tagged; never drop an item) so the save
+also leaves it clean. If it's already tidy, leave it.
+
 ### 4. Commit the paperwork
 Stage and commit **the framework docs you changed** with a clear message (e.g. `docs: session handoff — <2–4 word gist>`).
 Committing is what lets the docs travel to teammates and survive lost git history — but the docs already survive
