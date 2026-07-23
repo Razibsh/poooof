@@ -13,9 +13,30 @@ work.
 
 ## Inputs
 
-- **Stream:** `$ARGUMENTS`. If empty, list every worktree with a `.harness/RUN-REPORT-*.md` and its
-  final `STATUS:` line, then ask which to review. Multiple runs are reviewed **one at a time** — they
-  are independent and must stay that way.
+- **Stream:** `$ARGUMENTS`. If empty, open with the **morning board** (below), then review runs one at
+  a time. Reviewing is one-at-a-time — they are independent and must stay that way — but the operator
+  gets the whole night's picture before choosing where to start.
+
+### The morning board — first thing on screen after a multi-run night
+
+Before reviewing anything, one table covering every run: what it was, whether it finished, and the URL
+to look at it.
+
+| Run | Task | Status | Look at it | Verdict |
+|---|---|---|---|---|
+| `<stream-a>` | one line | DONE, 4 iters | http://localhost:3301 | pending |
+| `<stream-b>` | one line | DONE, 7 iters | http://localhost:3302 | pending |
+| `<stream-c>` | one line | **BLOCKED** — <why> | — | pending |
+
+Status comes from each `.harness/STATUS.md`; ports from each `.harness/PORTS.md`. Lead with the
+BLOCKED and no-report ones — a driver that died without writing a report is the case that most looks
+like success from a distance.
+
+Boot the DONE ones on their own ports and **open each URL in the browser** so they are ready to click.
+Booting N dev servers at once is heavy (~1GB each) — above three, boot them in batches as the operator
+works through the list, and say that's what you're doing.
+
+Then review one run properly (steps 1–7), take the operator's decision on it, and move to the next.
 
 ## Steps
 
@@ -74,8 +95,17 @@ Repeat, verbatim, the run's **"Design calls for the operator"** and **"For the o
 Those are the decisions it made alone — wording, layout, defaults, where data lands. Don't bury them in
 a summary; accepting or rejecting them is the operator's actual job here.
 
-Then say plainly: **what would they have to use to know this is good?** Gates can't judge product feel.
-Name the two-minute check (open the page, ask the assistant, try it on a phone).
+Then give the run's **validation checklist** — the thing the operator actually works through, tied to
+that run's URL. Numbered, concrete, each one a click and an expected result. Not "check it works":
+
+> **http://localhost:3302** — <run name>
+> 1. Open <path> → the <control> is visible on the row
+> 2. Click it, enter <value> → the total updates to <number>
+> 3. Reload → the value survived
+> 4. Narrow the window to phone width → nothing clipped
+
+Gates can't judge product feel; this is the part only they can do. Keep it to what *this diff* changed
+— a checklist long enough to feel like homework won't get done.
 
 ### 6. Give a verdict
 

@@ -49,6 +49,13 @@ without a person looking. Every one of the four runs needed a human catch before
 7c. **The shared staging domain shows one thing: what's merged.** It can never preview three unmerged
     runs. Morning review is three local URLs, not three deploys.
 
+7d. **A live-port check is not a port ledger.** `lsof` only sees what is LISTENING right now, so a port
+    claimed by a stopped stream reads as free — and setting up six runs at midnight, with nothing
+    running, is precisely when that hands one port out twice. Verified on the real project: three
+    registered ports all looked free. The ledger is the union of *listening now* + *the launch config*
+    + *every other stream's `PORTS.md`*, which is why `assign-ports.sh` exists instead of an
+    instruction to eyeball it. Each run writes its pair down immediately, or the next run can't see it.
+
 ## Behaviour
 
 8. **`set -o pipefail` on every gate.** `npm run lint | tail` reported green while the test runner

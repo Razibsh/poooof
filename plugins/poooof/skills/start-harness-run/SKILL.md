@@ -88,12 +88,20 @@ Assign each stream a unique, stable pair and write them into `.harness/PORTS.md`
 | **preview** (e.g. 3301, 3302, 3303) | The dev server *you* open in the morning to look at the work | One shared port = only one run viewable at a time |
 | **test** (e.g. 3401, 3402, 3403) | Whatever the gates boot (browser tests, an API harness) | Two runs testing at once on the same port **fail or, worse, test each other's app** |
 
-Pick from a base + offset (`3300 + n`, `3400 + n`) and check each is free (`lsof -nP -iTCP:<port> -sTCP:LISTEN`).
-Pass the test port into the gate command via the project's env var (e.g. `E2E_PORT`, `PORT`) — find it in
-the test config; a hard-coded default is exactly the collision to avoid.
+Run `templates/assign-ports.sh` from the project root — **do not eyeball it**. A live-port check
+(`lsof`) only sees what is LISTENING right now, so a port claimed by a stopped stream reads as free;
+setting up six runs at midnight, with nothing running, is exactly when that hands the same port out
+twice. The script takes the union of three claim sources — listening now, the project's launch config,
+and every other stream's `PORTS.md` — which is what makes the answer to *"will it always know?"* yes.
 
-If the project has a preview/launch config (e.g. `.claude/launch.json`), register the stream there with
-its preview port so the morning review is one click. Remove the entry in `finish-stream`.
+Then, for each run:
+
+- Write the pair into `<stream>/.harness/PORTS.md` **immediately** — that file is how the *next* run
+  in this same session sees the port as taken. Skipping it re-opens the collision.
+- Pass the test port into the gate command via the project's env var (e.g. `E2E_PORT`, `PORT`) — find
+  it in the test config; a hard-coded default is exactly the collision to avoid.
+- If the project has a preview/launch config (e.g. `.claude/launch.json`), register the stream there
+  with its preview port so the morning review is one click. Remove the entry in `finish-stream`.
 
 **Also check the shared services** the gates touch — one database or queue used by three runs at once
 will produce confusing cross-talk. Either give each run its own, or make the tasks non-overlapping in
@@ -135,6 +143,26 @@ cd "<stream folder>" && <ENV=…> MAX_ITERS=<n> MAX_HOURS=<n> caffeinate -i .har
 - Expect `=== iteration 1 ===` within a minute — that is the "it's alive" signal.
 
 **Do not start it yourself.** If you try, the permission layer will refuse — and it is right to.
+
+### 9b. Several runs in one night — still ONE paste
+
+Set up every run first, then hand over a single command that starts them all in the background. Six
+runs must not mean six terminal windows and six pastes:
+
+```
+cd "<project root>" && for s in <stream-a> <stream-b> <stream-c>; do
+  ( cd "$s" && MAX_ITERS=<n> MAX_HOURS=<n> nohup .harness/run-harness.sh > .harness/logs/run.out 2>&1 & )
+done; caffeinate -i -w $$
+```
+
+- `caffeinate -i -w $$` holds the machine awake for as long as that shell lives — leave the window open.
+- Watch them all: `tail -f */.harness/logs/run.out`
+- Stop one: `touch <stream>/.harness/STOP`. Stop all: `touch */.harness/STOP`.
+- Concurrency is real work, not free: N runs = N agents + N gate suites on one machine. Three heavy
+  runs is a sane ceiling on a laptop; say so rather than letting six thrash and all finish late.
+
+The rule does not bend — **the human still pastes it.** One paste for N runs is a convenience;
+an agent starting its own unattended, self-approving runs is not.
 
 ### 10. Supervise (optional but recommended)
 
