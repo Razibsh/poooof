@@ -17,6 +17,14 @@ work.
   a time. Reviewing is one-at-a-time — they are independent and must stay that way — but the operator
   gets the whole night's picture before choosing where to start.
 
+### If a morning report was prepared overnight
+
+Check for `<project>/.harness-morning.md` first (written by the scheduled task from
+`start-harness-run` step 9c). If it exists, **use it as a starting point, not as the answer** — say
+when it was written, then still re-run the gates yourself. It was produced by an agent with no human
+in the loop; its numbers are a head start, not a verdict. Anything it and you disagree on, trust your
+own run and say so.
+
 ### The morning board — first thing on screen after a multi-run night
 
 Before reviewing anything, one table covering every run: what it was, whether it finished, and the URL

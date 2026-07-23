@@ -164,7 +164,24 @@ done; caffeinate -i -w $$
 The rule does not bend — **the human still pastes it.** One paste for N runs is a convenience;
 an agent starting its own unattended, self-approving runs is not.
 
-### 10. Supervise (optional but recommended)
+### 9c. Offer a morning report that is already written when they wake up
+
+Ask whether they want the review prepared before they sit down. If yes, register a **scheduled task**
+(one-shot, `fireAt` tomorrow morning — not a session cron, which dies with the session):
+
+- The prompt must be **fully self-contained**. That run has no memory of this conversation: give it the
+  project root, the stream folders, the ports, and the task each run was given.
+- Tell it to do the mechanical half only: read each `RUN-REPORT-*.md` and `STATUS.md`, **re-run the
+  gates itself** and compare to each `BASELINE.md`, check each diff stayed in scope, and write the
+  morning board plus a per-run validation checklist to `<project>/.harness-morning.md`.
+- Tell it explicitly: **do not merge, do not push, do not deploy, do not delete a branch.** It prepares;
+  the operator decides. A scheduled run has no human in it, so the merge rule matters more, not less.
+- Booting dev servers and driving the UI is left for the live session — an unattended run cannot judge
+  whether something *looks* right, which is the whole point of step 4b.
+
+Say plainly what it does and doesn't cover: the operator wakes to verified numbers and a checklist,
+but the looking, the judgement, and the merge are still theirs. If the app was closed overnight the
+task runs on next launch, so it may be a minute late rather than instant.
 
 Arm a background monitor on the log that reports each iteration, the final report, **and a driver that
 died without producing one** — silence must never be mistaken for success. When it finishes,
