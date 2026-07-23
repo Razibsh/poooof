@@ -101,7 +101,10 @@ function activeStreams(docDir) {
     const branch = cells[1];
     if (/^stream$/i.test(name)) continue;          // header
     if (/^-+$/.test(name)) continue;               // divider
-    if (/_\(none active\)_/.test(name)) continue;  // placeholder
+    // Placeholder row — tolerate any "_(none …)_" wording, not just the canonical
+    // "_(none active)_". Writing "_(none registered)_" used to be parsed as a real stream, so the
+    // hook told the operator to finish-stream a stream that never existed.
+    if (/_\(\s*none\b[^)]*\)_/i.test(name)) continue;
     if (!branch || /^-+$/.test(branch)) continue;
     rows.push({ name, branch });
   }
