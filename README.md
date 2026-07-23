@@ -27,7 +27,8 @@ for you.
 
 This one plugin gives you every command, all namespaced `poooof:` — `poooof:new-project`,
 `poooof:adopt`, `poooof:start-stream`, `poooof:finish-stream`, `poooof:check-streams`,
-`poooof:handoff`, `poooof:tidy`, `poooof:update`, `poooof:convert-to-bare`.
+`poooof:start-harness-run`, `poooof:harness-report`, `poooof:handoff`, `poooof:tidy`,
+`poooof:update`, `poooof:convert-to-bare`.
 
 **👉 Turn on auto-update now (do this once — recommended).** Then you get every new version automatically at
 startup, and never have to update by hand again:
@@ -154,6 +155,8 @@ poooof/
         ├── start-stream/SKILL.md       # poooof:start-stream
         ├── finish-stream/SKILL.md      # poooof:finish-stream
         ├── check-streams/SKILL.md      # poooof:check-streams
+        ├── start-harness-run/          # poooof:start-harness-run (+ templates, references)
+        ├── harness-report/SKILL.md     # poooof:harness-report
         ├── handoff/SKILL.md            # poooof:handoff
         ├── tidy/SKILL.md               # poooof:tidy
         ├── update/SKILL.md             # poooof:update
@@ -196,6 +199,67 @@ before merging to catch that early.) See a scaffolded project's `TEAM-WORKFLOW.m
 the agent into the right worktree — so it always works in the correct folder.
 
 These commands ship in the same `poooof` plugin (see **Install** above) — no extra install.
+
+## Work while you sleep — `poooof:start-harness-run`
+
+Hand a task to an agent that plans, builds, tests and commits **on its own**, overnight, in a sealed
+worktree. Two moments stay yours: **you press start, and you decide what to merge.**
+
+```
+poooof:start-harness-run persist the list sort/filter across navigation
+```
+
+The setup — done for you, before anything runs — is where the reliability comes from:
+
+1. **Checks the task against the real code.** Tasks rot; a backlog item is often half-shipped already.
+2. **Creates an isolated stream** (its own folder + branch). `main` is never touched.
+3. **Records a gate baseline** — runs your tests *before* any change, so the run can tell its own
+   breakage from what was already broken. Without this it chases ghosts.
+4. **Installs dependencies and checks secrets** — a fresh worktree is an empty shell, and a sleeping
+   human can't paste an API key at 3am.
+5. **Writes the rulebook** the agent runs under: stay in scope, never edit the test that judges you,
+   commit only green work, stop and write down why if blocked.
+6. **Prints one command.** You paste it and go to bed.
+
+In the morning:
+
+```
+poooof:harness-report
+```
+
+It re-runs the tests **itself** rather than trusting the run's own summary, shows you exactly what
+changed, repeats the decisions the agent made alone (wording, defaults, layout — yours to accept or
+reject), and gives a verdict: merge, fix first, or throw away.
+
+### Seeing three runs in the morning
+
+Each run gets **its own preview port**, so you compare them side by side locally:
+
+    run A → http://localhost:3301     run B → http://localhost:3302     run C → http://localhost:3303
+
+`poooof:harness-report` boots the one you're reviewing and hands you the URL (it looks first, then
+tells you what it saw). Your shared staging domain can only ever show what's already **merged** — so
+it shows at most one of the three; the local ports are how you judge them *before* deciding.
+
+Each run also gets its own **test port**, so overnight runs don't run their browser tests over each
+other — a real collision, since most test configs default to one fixed port.
+
+### Several runs a night stay separate
+
+**One run = one branch = one PR = one merge commit.** Nothing merges itself, so three overnight runs
+give you three independent branches to judge one at a time:
+
+| Stage | How to undo it |
+|---|---|
+| Not merged yet | Delete the branch. It never touched `main`. |
+| Merged | GitHub's **Revert** button on that PR — or `git revert -m 1 <merge-sha>`. Undoes that run only. |
+| Merged and deployed | Revert, then re-deploy. Merged never means shipped. |
+
+That's the whole safety story: nothing an agent does at night is a one-way door.
+
+> Field-tested over four unattended runs — including a five-milestone feature built solo in six
+> iterations — all reviewed, merged and shipped to production. What each rule is defending against is
+> written down in the skill's `references/lessons.md`.
 
 ## Save before you clear — `poooof:handoff`
 

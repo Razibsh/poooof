@@ -42,6 +42,17 @@ Plain language; the operator may not be a developer.
      after it's merged. Verify merged: `git -C "$ROOT/main" pull --ff-only && git -C "$ROOT/main" merge-base --is-ancestor "feat/<name>" main`.
    - **FF style:** `git -C "$ROOT/main" pull --ff-only 2>/dev/null || true; git -C "$ROOT/main" merge --ff-only "feat/<name>"` then `git -C "$ROOT/main" push -q` if `origin` exists.
 
+4b. **Harness streams (a `.harness/` folder exists) — do this BEFORE any cleanup.** The run's whole
+   record lives in that folder; removing the worktree destroys it.
+   - **Refuse to finish an unreviewed run.** If `poooof:harness-report` hasn't reviewed it, stop and run
+     that first. An autonomous run must never be merged-and-swept in one motion.
+   - **Archive the record:** copy the newest `.harness/RUN-REPORT-*.md` and the final `.harness/STATUS.md`
+     into `main/docs/harness/<name>-<date>.md`, so the reasoning outlives the worktree. Append anything
+     learned about *running the harness itself* to `main/docs/harness/CONTEXT-LOG.md` (create if absent).
+   - **Carry the leftovers forward:** every "For the operator" line and every unmet criterion becomes a
+     BACKLOG entry or a spawned task — none of it may vanish with the folder.
+   - **Record the undo path** in the docs commit: `revert with: git revert -m 1 <merge-sha>`.
+
 5. **Promote decisions.** Open `$STREAM/STATUS.md` → `## Decision log`. Move the locked / cross-cutting
    decisions into `main/DECISIONS.md` (under its list), each as a `- <decision> — <why> (<date>, from <name>)`
    line. Commit on main: `git -C "$ROOT/main" add DECISIONS.md && git -C "$ROOT/main" commit -q -m "docs(decisions): promote from <name>"`.
@@ -69,6 +80,8 @@ Plain language; the operator may not be a developer.
    Tell the operator the stream is merged + cleaned, and confirm `git worktree list` no longer shows it.
 
 ## Rules
+- **One stream per PR** — never fold two streams (or two harness runs) into one. A single merge commit
+  per stream is what makes `git revert -m 1 <merge-sha>` undo exactly one piece of work.
 - A stream isn't done until `ROADMAP.md` reflects it — never skip the roadmap reconciliation (step 6).
 - Never clean up before the branch is actually merged into `main` (verify with `merge-base --is-ancestor`).
 - Default to PR; only fast-forward when the project's `merge_style` says so.
