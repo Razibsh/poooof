@@ -50,6 +50,24 @@ Passing gates prove the tests pass, not that the work is good. Read the actual c
 anything touching money, auth, permissions, or data writes. Say plainly if you find something the run
 did not flag.
 
+### 4b. Show it running — reading a diff is not seeing the work
+
+If the change is visible in a running app, **boot that stream on its own preview port** (from
+`.harness/PORTS.md`) and give the operator a URL. Three overnight runs = three URLs on three ports,
+open side by side; the shared staging domain only ever shows what has already been merged, so it can
+show at most one of them.
+
+```
+<project preview command> --prefix <stream> -- -p <preview port>   →  http://localhost:<port>
+```
+
+Then do the looking yourself first: open the affected screen, drive the actual flow, check the console
+for errors, and check a narrow width if it is UI. Attach a screenshot of the real thing. Say plainly
+whether it *looks* right — gates cannot judge that, and this is the step where a passing run gets
+caught being wrong.
+
+Leave the servers running while the operator reviews; shut them down after the verdict.
+
 ### 5. Surface what only a human can judge
 
 Repeat, verbatim, the run's **"Design calls for the operator"** and **"For the operator"** sections.

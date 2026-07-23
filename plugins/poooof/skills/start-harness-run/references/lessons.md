@@ -38,6 +38,17 @@ without a person looking. Every one of the four runs needed a human catch before
 7. **Reuse shared services; only stop what you started.** The first driver would have torn down a
    database another session was using.
 
+## Parallel runs
+
+7b. **Ports are per-run, not per-project.** The first project to try this had six launch-config entries
+    all on port 3000 and a test runner hard-defaulting to one port — so three overnight runs could
+    neither be *viewed* side by side in the morning nor safely *run* at the same time (two suites on
+    one port test each other's app). Assign each run a preview port and a test port, and pass the test
+    port into the gates through the project's env var.
+
+7c. **The shared staging domain shows one thing: what's merged.** It can never preview three unmerged
+    runs. Morning review is three local URLs, not three deploys.
+
 ## Behaviour
 
 8. **`set -o pipefail` on every gate.** `npm run lint | tail` reported green while the test runner

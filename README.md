@@ -231,6 +231,19 @@ It re-runs the tests **itself** rather than trusting the run's own summary, show
 changed, repeats the decisions the agent made alone (wording, defaults, layout — yours to accept or
 reject), and gives a verdict: merge, fix first, or throw away.
 
+### Seeing three runs in the morning
+
+Each run gets **its own preview port**, so you compare them side by side locally:
+
+    run A → http://localhost:3301     run B → http://localhost:3302     run C → http://localhost:3303
+
+`poooof:harness-report` boots the one you're reviewing and hands you the URL (it looks first, then
+tells you what it saw). Your shared staging domain can only ever show what's already **merged** — so
+it shows at most one of the three; the local ports are how you judge them *before* deciding.
+
+Each run also gets its own **test port**, so overnight runs don't run their browser tests over each
+other — a real collision, since most test configs default to one fixed port.
+
 ### Several runs a night stay separate
 
 **One run = one branch = one PR = one merge commit.** Nothing merges itself, so three overnight runs

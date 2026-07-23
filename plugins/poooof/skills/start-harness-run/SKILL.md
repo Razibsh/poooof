@@ -78,6 +78,27 @@ suite that isn't even installed will look green.
 - **Ports/services:** if gates need a DB or dev server, confirm it is up and that the run will **reuse**
   a shared one rather than tearing down something another session is using.
 
+### 6b. Give the run its own ports — parallel runs collide otherwise
+
+Several runs in one night means several copies of the app. **Ports are per-run, not per-project.**
+Assign each stream a unique, stable pair and write them into `.harness/PORTS.md` + the launch command:
+
+| Port | For | Why it must be unique |
+|---|---|---|
+| **preview** (e.g. 3301, 3302, 3303) | The dev server *you* open in the morning to look at the work | One shared port = only one run viewable at a time |
+| **test** (e.g. 3401, 3402, 3403) | Whatever the gates boot (browser tests, an API harness) | Two runs testing at once on the same port **fail or, worse, test each other's app** |
+
+Pick from a base + offset (`3300 + n`, `3400 + n`) and check each is free (`lsof -nP -iTCP:<port> -sTCP:LISTEN`).
+Pass the test port into the gate command via the project's env var (e.g. `E2E_PORT`, `PORT`) — find it in
+the test config; a hard-coded default is exactly the collision to avoid.
+
+If the project has a preview/launch config (e.g. `.claude/launch.json`), register the stream there with
+its preview port so the morning review is one click. Remove the entry in `finish-stream`.
+
+**Also check the shared services** the gates touch — one database or queue used by three runs at once
+will produce confusing cross-talk. Either give each run its own, or make the tasks non-overlapping in
+the data they write, and say which you did.
+
 ### 7. Write the `.harness` kit
 
 Into `<stream>/.harness/` (and add `.harness/` to that worktree's `info/exclude` so the run can never
