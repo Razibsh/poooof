@@ -70,6 +70,33 @@ function resolve() {
   return null;
 }
 
+// The main worktree must be sitting on the main branch. Every other check, every skill,
+// and the whole bare-repo layout assume `<root>/main/` IS main — and nothing ever verified
+// it. On 2026-08-18 it was wrong three times in one day (a feature branch, then a merged
+// stream's worktree holding main hostage, then a docs branch), and each time it caused a
+// real problem: a commit nearly landed on the wrong branch, Check 3 measured the wrong
+// branch's backlog, and a session was blocked from registering its stream.
+function mainWorktreeOffMain(gitCwd, docDir, mainRef) {
+  if (path.basename(docDir) !== mainRef) return null;   // flat repo, or docs aren't in main/
+  const head = git(['rev-parse', '--abbrev-ref', 'HEAD'], docDir);
+  if (head.code !== 0 || !head.out || head.out === mainRef) return null;
+  if (head.out === 'HEAD') return { on: 'a detached HEAD', holder: null };
+  // Who has main checked out instead? Naming them makes the fix obvious.
+  let holder = null;
+  const wt = git(['worktree', 'list', '--porcelain'], gitCwd);
+  if (wt.code === 0) {
+    for (const block of wt.out.split(/\n\s*\n/)) {
+      const b = block.match(/^branch (.+)$/m);
+      const d = block.match(/^worktree (.+)$/m);
+      if (b && d && b[1].trim().replace(/^refs\/heads\//, '') === mainRef) {
+        const base = path.basename(d[1].trim());
+        if (base !== path.basename(docDir)) holder = base;
+      }
+    }
+  }
+  return { on: head.out, holder };
+}
+
 // Streams whose CODE moved but whose paperwork did not. This is the check that makes
 // silence impossible: an agent can decline to document, but it cannot hide the fact.
 // For each unmerged stream we find when its `docs/streams/<name>.md` was last touched
@@ -282,6 +309,14 @@ function main() {
     findings.push(s.noDoc
       ? `- Stream **${s.name}** (\`${s.branch}\`) has **${s.n} commit(s) and no \`docs/streams/${s.name}.md\`** → the work has no written record at all. Write the stream doc, or run \`poooof:handoff\` from that worktree.`
       : `- Stream **${s.name}** (\`${s.branch}\`) has **${s.n} commit(s) newer than its stream doc** → code moved, the record did not. Run \`poooof:handoff\` from that worktree so the next session inherits the truth.`);
+  }
+
+  // Check 6: the main worktree is not on the main branch. Everything else assumes it is.
+  const off = mainWorktreeOffMain(gitCwd, docDir, mainRef);
+  if (off) {
+    findings.push(off.holder
+      ? `- The **${path.basename(docDir)}/** folder is on \`${off.on}\`, not \`${mainRef}\` — and **${off.holder}/** is holding \`${mainRef}\`. Other checks and skills assume \`${path.basename(docDir)}/\` IS ${mainRef}. Free the branch (finish that stream, or move it off ${mainRef}) and put this folder back with \`git checkout ${mainRef}\`.`
+      : `- The **${path.basename(docDir)}/** folder is on ${off.on === 'a detached HEAD' ? off.on : `\`${off.on}\``}, not \`${mainRef}\` → \`git checkout ${mainRef}\` there when its tree is clean. Commits made here land on the wrong branch, and doc-sync reads the wrong branch's state.`);
   }
 
   if (!findings.length) return; // everything in sync — stay silent
