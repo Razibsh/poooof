@@ -70,6 +70,40 @@ function resolve() {
   return null;
 }
 
+// Streams whose CODE moved but whose paperwork did not. This is the check that makes
+// silence impossible: an agent can decline to document, but it cannot hide the fact.
+// For each unmerged stream we find when its `docs/streams/<name>.md` was last touched
+// (searched across all refs, since the doc usually lives on main while the code lives on
+// the branch) and count how many of the branch's own commits landed after that. Three or
+// more means real work has accumulated with no record of it.
+//
+// Deliberately NOT a judgement about quality — only about existence. Whether the doc is
+// any good is a human's call; whether it was updated at all is arithmetic.
+function staleStreamDocs(gitCwd, docDir, rows, mainRef) {
+  const STALE_AFTER = Number(process.env.POOOOF_STALE_AFTER) > 0
+    ? Number(process.env.POOOOF_STALE_AFTER)
+    : 3;
+  const out = [];
+  for (const r of rows) {
+    if (git(['rev-parse', '--verify', '--quiet', r.branch], gitCwd).code !== 0) continue; // gone
+    if (git(['merge-base', '--is-ancestor', r.branch, mainRef], gitCwd).code === 0) continue; // merged: Check 1 owns it
+    const ahead = git(['rev-list', '--count', `${mainRef}..${r.branch}`], gitCwd);
+    if (ahead.code !== 0 || !/^\d+$/.test(ahead.out) || Number(ahead.out) === 0) continue;
+
+    const doc = `docs/streams/${r.name}.md`;
+    const when = git(['log', '-1', '--format=%ct', '--all', '--', doc], gitCwd);
+    if (when.code !== 0 || !/^\d+$/.test(when.out)) {
+      out.push({ name: r.name, branch: r.branch, n: ahead.out, noDoc: true });
+      continue;
+    }
+    const newer = git(['rev-list', '--count', `--since=@${when.out}`, `${mainRef}..${r.branch}`], gitCwd);
+    if (newer.code === 0 && /^\d+$/.test(newer.out) && Number(newer.out) >= STALE_AFTER) {
+      out.push({ name: r.name, branch: r.branch, n: newer.out, noDoc: false });
+    }
+  }
+  return out;
+}
+
 // Worktrees that exist on disk but have NO row in WORKSTREAMS.md. This is the mirror of
 // Check 1: that one catches a row whose branch already merged, this catches a worktree
 // nobody wrote down. An unregistered worktree is invisible to every other session — real
@@ -232,6 +266,15 @@ function main() {
     const n = git(['rev-list', '--count', `${mainRef}..${w.branch}`], gitCwd);
     const cnt = (n.code === 0 && /^\d+$/.test(n.out)) ? n.out : '?';
     findings.push(`- Worktree **${w.base}/** (\`${w.branch}\`, ${cnt} commit(s) ahead of ${mainRef}) has **no row in WORKSTREAMS.md** → that work is invisible to every other session. Register it (a row + \`docs/streams/${w.base}.md\`), or run \`poooof:finish-stream\` if it is already done.`);
+  }
+
+  // Check 5: a stream whose code moved but whose stream doc did not. Checks 1-4 all watch
+  // git-vs-git or git-vs-table; this one watches WORK vs its RECORD, which is the drift a
+  // human actually pays for later.
+  for (const s of staleStreamDocs(gitCwd, docDir, activeStreams(docDir), mainRef)) {
+    findings.push(s.noDoc
+      ? `- Stream **${s.name}** (\`${s.branch}\`) has **${s.n} commit(s) and no \`docs/streams/${s.name}.md\`** → the work has no written record at all. Write the stream doc, or run \`poooof:handoff\` from that worktree.`
+      : `- Stream **${s.name}** (\`${s.branch}\`) has **${s.n} commit(s) newer than its stream doc** → code moved, the record did not. Run \`poooof:handoff\` from that worktree so the next session inherits the truth.`);
   }
 
   if (!findings.length) return; // everything in sync — stay silent
