@@ -70,6 +70,31 @@ function resolve() {
   return null;
 }
 
+// Worktrees that exist on disk but have NO row in WORKSTREAMS.md. This is the mirror of
+// Check 1: that one catches a row whose branch already merged, this catches a worktree
+// nobody wrote down. An unregistered worktree is invisible to every other session — real
+// commits pile up in a folder the tracking docs never mention, which is exactly the drift
+// the docs exist to prevent. Seen live 2026-08-18: a 7-commit worktree with no row.
+function unregisteredWorktrees(gitCwd, docDir, rows) {
+  const out = git(['worktree', 'list', '--porcelain'], gitCwd);
+  if (out.code !== 0) return [];
+  const docBase = path.basename(docDir);
+  const res = [];
+  for (const block of out.out.split(/\n\s*\n/)) {
+    if (/^bare$/m.test(block)) continue;                     // the .bare repo itself
+    const dirM = block.match(/^worktree (.+)$/m);
+    const brM = block.match(/^branch (.+)$/m);
+    if (!dirM || !brM) continue;                             // detached HEAD = not a stream
+    const base = path.basename(dirM[1].trim());
+    const branch = brM[1].trim().replace(/^refs\/heads\//, '');
+    if (base === docBase) continue;                          // the main worktree itself
+    if (branch === 'main' || branch === 'master') continue;
+    if (rows.some(r => r.name === base || r.branch === branch)) continue;
+    res.push({ base, branch });
+  }
+  return res;
+}
+
 // The repo's primary integration branch.
 function mainBranch(cwd) {
   for (const b of ['main', 'master']) {
@@ -199,6 +224,14 @@ function main() {
   const ahead = git(['rev-list', '--count', `@{upstream}..${mainRef}`], gitCwd);
   if (ahead.code === 0 && /^\d+$/.test(ahead.out) && Number(ahead.out) > 0) {
     findings.push(`- ${mainRef} has **${ahead.out} commit(s) not pushed** to origin → back up with \`git push\` when you're at a clean stopping point.`);
+  }
+
+  // Check 4: a worktree on disk that no row in WORKSTREAMS.md mentions. Check 1 catches a
+  // row without a live branch; this catches the reverse — a branch without a row.
+  for (const w of unregisteredWorktrees(gitCwd, docDir, activeStreams(docDir))) {
+    const n = git(['rev-list', '--count', `${mainRef}..${w.branch}`], gitCwd);
+    const cnt = (n.code === 0 && /^\d+$/.test(n.out)) ? n.out : '?';
+    findings.push(`- Worktree **${w.base}/** (\`${w.branch}\`, ${cnt} commit(s) ahead of ${mainRef}) has **no row in WORKSTREAMS.md** → that work is invisible to every other session. Register it (a row + \`docs/streams/${w.base}.md\`), or run \`poooof:finish-stream\` if it is already done.`);
   }
 
   if (!findings.length) return; // everything in sync — stay silent
