@@ -1,7 +1,26 @@
 # Status — session handoff
 
-**Last updated:** 2026-08-18 — **v1.7.1 shipped and pushed** (`61b895c`). Two releases today:
-v1.7.0 made the handoff automatic; v1.7.1 taught doc-sync to see work that was never written down.
+**Last updated:** 2026-08-18 — **v1.7.3 shipped and pushed**. Four releases in one day, all installed
+and verified: v1.7.0 made the handoff automatic, v1.7.1–1.7.3 taught doc-sync to see work nobody wrote
+down and to stop lying about which branch it was reading.
+
+## v1.7.3 — the main worktree must be on the main branch
+
+Check 6. Every check, every skill and the whole bare-repo layout assume `<root>/main/` **is** main, and
+nothing verified it. It was wrong **three times on 2026-08-18** — a feature branch, a merged stream's
+worktree holding main hostage, then a docs branch — and each time cost something real: a commit nearly
+landed on the wrong branch, Check 3 measured the wrong branch, and a session was blocked from
+registering its stream because the row could not be committed to main. Names the folder, the branch it
+is really on, and which worktree is holding main.
+
+## v1.7.2 — stop asking the wrong branch whether it is pushed
+
+`@{upstream}` resolves against HEAD, so with the main worktree on a feature branch, Check 3 measured
+that branch's backlog and reported it as main's — a confident "123 commit(s) not pushed" for a main
+that was 0 ahead. False alarms are not harmless: a check that cries wolf trains everyone to skip the
+block, which is the failure mode this framework exists to prevent. Now resolves `main`'s own upstream.
+
+## v1.7.1 — doc-sync sees invisible work
 
 ## v1.7.1 — doc-sync sees invisible work
 
