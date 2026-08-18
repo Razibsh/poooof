@@ -255,7 +255,14 @@ function main() {
   writeCache({ surfaced: [...surfaced] });
 
   // Check 3 (read-only sync awareness): unpushed commits on main = work not backed up.
-  const ahead = git(['rev-list', '--count', `@{upstream}..${mainRef}`], gitCwd);
+  // `@{upstream}` resolves against HEAD, not against mainRef — so in a worktree sitting on
+  // some other branch this measured that branch's backlog and reported it as main's. It
+  // produced a confident "123 commit(s) not pushed" for a main that was actually 0 ahead
+  // (2026-08-18). Ask about the main branch explicitly instead.
+  const upstream = git(['rev-parse', '--abbrev-ref', `${mainRef}@{upstream}`], gitCwd);
+  const ahead = upstream.code === 0 && upstream.out
+    ? git(['rev-list', '--count', `${upstream.out}..${mainRef}`], gitCwd)
+    : { code: 1, out: '' };
   if (ahead.code === 0 && /^\d+$/.test(ahead.out) && Number(ahead.out) > 0) {
     findings.push(`- ${mainRef} has **${ahead.out} commit(s) not pushed** to origin → back up with \`git push\` when you're at a clean stopping point.`);
   }
