@@ -1,7 +1,26 @@
 # Status — session handoff
 
-**Last updated:** 2026-08-18 — v1.7.0: made the handoff **automatic** instead of something a human had
-to remember. Branch `feat/automatic-handoff`, commit `2aed6d3`. **Committed, NOT pushed.**
+**Last updated:** 2026-08-18 — **v1.7.1 shipped and pushed** (`61b895c`). Two releases today:
+v1.7.0 made the handoff automatic; v1.7.1 taught doc-sync to see work that was never written down.
+
+## v1.7.1 — doc-sync sees invisible work
+
+- **Check 4** — a worktree with no `WORKSTREAMS.md` row. The hook only ever looked for the opposite
+  (a row whose branch had merged), so an unregistered worktree was invisible. Caught live: a
+  `forms-builder/` worktree that went 7 → 16 commits in under an hour with no row and no doc.
+- **Check 5** — a stream whose **code moved but whose record did not**. Finds when
+  `docs/streams/<name>.md` was last touched (across all refs — the doc lives on main, the code on the
+  branch) and counts branch commits landing after it. ≥3, or no doc at all, and it says so at the next
+  session start. Override with `POOOOF_STALE_AFTER`.
+  First run against the Shyft repo found `messaging-agent-m3` with **24 commits and no stream doc**,
+  and `forms-builder` with 4 commits newer than a doc written an hour earlier.
+
+**Why Check 5 matters:** it is the only check that asks whether the work got written down. Nothing can
+force good notes — but after this, an agent cannot skip them *silently*. That converts "I hope he
+documented it" into "I'll be told if he didn't", which is the only honest guarantee on offer. It is
+scoped to existence, never quality: whether a doc is any good is a human's call.
+
+## v1.7.0 — the handoff runs itself
 
 ## The problem this release fixes
 
@@ -39,7 +58,7 @@ Every previous revision added one more thing to remember, which is why none of t
   startup, so it only takes effect after a release + update + a fresh session.
 
 ## 🔴 The thing that blocks everything
-**Not pushed.** Installed projects pull the plugin from the public GitHub repo, so v1.7.0 is inert
+**RESOLVED — pushed 2026-08-18.** Installed projects pull the plugin from the public GitHub repo, so v1.7.0 is inert
 until it is pushed and `poooof:update` runs. **Awaiting Razi's explicit go-ahead** — publishing to a
 public repo is his call, not the agent's. (Note: the v1.5.0 release was pending this same way and the
 handoff feature sat unused for six weeks as a result.)
