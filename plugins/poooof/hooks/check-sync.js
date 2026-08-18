@@ -207,7 +207,8 @@ function main() {
     '📋 poooof doc-sync — these are out of step with git and should be reconciled before other work ' +
     '(this is the framework keeping ROADMAP.md / WORKSTREAMS.md honest, so any agent picks up an accurate picture):\n' +
     findings.join('\n') +
-    '\nReconcile the above now, then continue with the session.';
+    '\nReconcile these BEFORE the first code or doc change in this repo — answering a question first is fine, ' +
+    'but do not START feature work on a stale picture. Each is a one-command fix.';
 
   process.stdout.write(JSON.stringify({
     systemMessage: `📋 poooof: doc-sync drift detected (${findings.length}) — reconciling before other work.`,

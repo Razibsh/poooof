@@ -1,7 +1,6 @@
 ---
 name: tidy
-description: Re-organize a project's BACKLOG.md into the framework's clean format — dated, newest-first, grouped by status (📥 Inbox → 🔨 Promoted → ✅ Done), area-tagged, de-duplicated. Also migrates an old flat/messy backlog into that format in one pass. Non-destructive (only moves and annotates lines, never drops an item) and diff-first. Use when the backlog has drifted into a wall of text, after importing items, or to convert an existing project's backlog to the current layout. User-invoked only.
-disable-model-invocation: true
+description: Re-organize a project's BACKLOG.md into the framework's clean format — dated, newest-first, grouped by status (📥 Inbox → 🔨 Promoted → ✅ Done), area-tagged, de-duplicated. Also migrates an old flat/messy backlog into that format in one pass. Non-destructive (only moves and annotates lines, never drops an item) and diff-first. Use when the backlog has drifted into a wall of text, after importing items, or to convert an existing project's backlog to the current layout. Also invoked by `poooof:handoff` as part of the end-of-session save.
 argument-hint: (none — operates on this project's BACKLOG.md)
 allowed-tools: Read, Write, Edit, Bash(git:*), Bash(ls:*)
 ---
