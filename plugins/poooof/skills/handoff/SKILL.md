@@ -1,7 +1,6 @@
 ---
 name: handoff
-description: Flush every durable fact from this chat into the project's tracking files and confirm it's safe to clear — the "save before I /clear" command. Runs the framework's end-of-session ritual in one shot: refresh STATUS.md (done / verified / next), make sure decisions, ideas, and roadmap check-offs are all written to their typed homes, commit the paperwork, confirm any memory plugin captured the session, then print exactly what was saved and where plus a "safe to clear" green light. Use when nearing the context limit and wanting to continue in a fresh chat, or when the operator says "save", "handoff", "did we save everything", or "can I clear". User-invoked only.
-disable-model-invocation: true
+description: Flush every durable fact from this chat into the project's tracking files and confirm it's safe to clear — the "save before I /clear" command. Runs the framework's end-of-session ritual in one shot: refresh STATUS.md (done / verified / next), make sure decisions, ideas, and roadmap check-offs are all written to their typed homes, commit the paperwork, confirm any memory plugin captured the session, then print exactly what was saved and where plus a "safe to clear" green light. Use when nearing the context limit and wanting to continue in a fresh chat, or when the operator says "save", "handoff", "did we save everything", or "can I clear". ALSO use proactively — without being asked — when the session has run long (the framework's context hook says so), when a stream reaches a natural stopping point, or before starting an unrelated piece of work. Saving early is cheap; losing the session is not.
 argument-hint: (none)
 allowed-tools: Read, Write, Edit, Bash(git:*), Bash(command -v:*), Bash(ls:*)
 ---
