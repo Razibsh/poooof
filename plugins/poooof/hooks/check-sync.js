@@ -63,11 +63,35 @@ function resolve() {
         // Pick a git working dir: prefer a real worktree (the doc dir if it has .git,
         // else the resolved toplevel).
         const gitCwd = fs.existsSync(path.join(dir, '.git')) ? dir : (top.code === 0 ? top.out : dir);
-        return { docDir: dir, gitCwd };
+        return { docDir: dir, gitCwd, root };
       }
     } catch (e) { /* keep looking */ }
   }
   return null;
+}
+
+// Folders sitting at a bare-repo ROOT that are not worktrees. The root is supposed to be a map of
+// branches and nothing else — that is what makes the file picker readable, because every folder in
+// it IS a stream and its name IS its branch. One stray folder breaks that, and nothing ever looked.
+//
+// Found 2026-08-18 in a real project: a `docs/` holding nothing but a .DS_Store, and a `LEGAL-PAGES/`
+// holding the live site's privacy policy and terms — in NO git repository at all, unversioned and
+// unbacked-up, sitting there for weeks because no check reads the root.
+function straysAtRoot(root, gitCwd) {
+  if (!root) return [];                                   // flat repo — no bare root to police
+  const known = new Set();
+  const wt = git(['worktree', 'list', '--porcelain'], gitCwd);
+  if (wt.code !== 0) return [];
+  for (const line of wt.out.split('\n')) {
+    if (line.startsWith('worktree ')) known.add(path.basename(line.slice(9).trim()));
+  }
+  let entries = [];
+  try { entries = fs.readdirSync(root, { withFileTypes: true }); } catch (e) { return []; }
+  return entries
+    .filter((e) => e.isDirectory())
+    .map((e) => e.name)
+    .filter((n) => !n.startsWith('.'))                    // .bare, .claude — infrastructure, not clutter
+    .filter((n) => !known.has(n));
 }
 
 // One line naming where this session actually is. The operator asked this three separate times:
@@ -269,7 +293,7 @@ function writeCache(c) {
 function main() {
   const ctx = resolve();
   if (!ctx) return; // not a poooof project — stay silent
-  const { docDir, gitCwd } = ctx;
+  const { docDir, gitCwd, root } = ctx;
   const mainRef = mainBranch(gitCwd);
 
   const findings = [];
@@ -336,6 +360,14 @@ function main() {
     findings.push(off.holder
       ? `- The **${path.basename(docDir)}/** folder is on \`${off.on}\`, not \`${mainRef}\` — and **${off.holder}/** is holding \`${mainRef}\`. Other checks and skills assume \`${path.basename(docDir)}/\` IS ${mainRef}. Free the branch (finish that stream, or move it off ${mainRef}) and put this folder back with \`git checkout ${mainRef}\`.`
       : `- The **${path.basename(docDir)}/** folder is on ${off.on === 'a detached HEAD' ? off.on : `\`${off.on}\``}, not \`${mainRef}\` → \`git checkout ${mainRef}\` there when its tree is clean. Commits made here land on the wrong branch, and doc-sync reads the wrong branch's state.`);
+  }
+
+  // Check 7: the bare root should be a map of branches — worktrees and nothing else.
+  const strays = straysAtRoot(root, gitCwd);
+  if (strays.length) {
+    findings.push(
+      `- The project root holds ${strays.length} folder(s) that are **not worktrees**: ${strays.map((n) => `\`${n}/\``).join(', ')} → at a bare root every folder should BE a stream, so the file picker reads itself. Move each into a worktree (where git will track it) or out of the project. 🔴 A folder here is in **no git repository at all** — nothing versions or backs it up.`,
+    );
   }
 
   const loc = locationLine(process.cwd());
