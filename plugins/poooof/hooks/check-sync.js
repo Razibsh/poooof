@@ -70,6 +70,25 @@ function resolve() {
   return null;
 }
 
+// One line naming where this session actually is. The operator asked this three separate times:
+// in the desktop app the folder and branch are picked when a chat starts and then never shown
+// again, and the terminal statusline does not exist there — so a chat gives no clue which worktree
+// it is in, and at a bare-repo root every stream folder looks identical in the file picker.
+//
+// Printed on EVERY session, in sync or not, because "where am I" is not an error condition. It also
+// surfaces a folder/branch mismatch immediately, before work happens rather than after.
+function locationLine(cwd) {
+  const top = git(['rev-parse', '--show-toplevel'], cwd);
+  if (top.code !== 0 || !top.out) return null;
+  const folder = path.basename(top.out);
+  const head = git(['rev-parse', '--abbrev-ref', 'HEAD'], cwd);
+  if (head.code !== 0 || !head.out) return null;
+  const branch = head.out === 'HEAD' ? 'detached' : head.out;
+  // main/main agrees; forms-builder/feat/forms-builder agrees; main/docs/whatever does not.
+  const agrees = folder === branch || branch.endsWith('/' + folder);
+  return `📍 ${folder} │ ${branch}${agrees ? '' : '  ⚠️ folder and branch disagree'}`;
+}
+
 // The main worktree must be sitting on the main branch. Every other check, every skill,
 // and the whole bare-repo layout assume `<root>/main/` IS main — and nothing ever verified
 // it. On 2026-08-18 it was wrong three times in one day (a feature branch, then a merged
@@ -319,7 +338,13 @@ function main() {
       : `- The **${path.basename(docDir)}/** folder is on ${off.on === 'a detached HEAD' ? off.on : `\`${off.on}\``}, not \`${mainRef}\` → \`git checkout ${mainRef}\` there when its tree is clean. Commits made here land on the wrong branch, and doc-sync reads the wrong branch's state.`);
   }
 
-  if (!findings.length) return; // everything in sync — stay silent
+  const loc = locationLine(process.cwd());
+
+  if (!findings.length) {
+    // In sync: still say where we are, and nothing else.
+    if (loc) process.stdout.write(JSON.stringify({ systemMessage: loc }));
+    return;
+  }
 
   const body =
     '📋 poooof doc-sync — these are out of step with git and should be reconciled before other work ' +
@@ -329,7 +354,7 @@ function main() {
     'but do not START feature work on a stale picture. Each is a one-command fix.';
 
   process.stdout.write(JSON.stringify({
-    systemMessage: `📋 poooof: doc-sync drift detected (${findings.length}) — reconciling before other work.`,
+    systemMessage: `${loc ? loc + '\n' : ''}📋 poooof: doc-sync drift detected (${findings.length}) — reconciling before other work.`,
     hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext: body },
   }));
 }
