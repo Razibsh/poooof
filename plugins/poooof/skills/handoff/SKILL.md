@@ -65,11 +65,29 @@ If a memory plugin is active (e.g. **claude-mem** — check for its context at s
 CLI), note that it captures observations automatically and the session is covered. If none is installed, say so:
 the files are the record.
 
-### 6. Report and give the green light
+### 6. Work out where the next chat must be opened
+
+The operator may have five or ten worktrees and no way to tell them apart in a file picker — the
+folder name is the only handle they have. **Resolve it explicitly, do not describe it:**
+
+```
+git rev-parse --show-toplevel      # the absolute path of THIS worktree
+git rev-parse --abbrev-ref HEAD    # the branch it is on
+```
+
+Print the **absolute path**, not "the same folder" — they are choosing from a macOS folder dialog
+where every stream looks identical, and a relative hint is useless there.
+
+### 7. Report and give the green light
 Print exactly this shape, filled in with what you really did:
 
 ```
 🧳 Handoff — <project>[ · <stream>]
+
+📂 OPEN THE NEXT CHAT IN THIS FOLDER:
+     <absolute path from `git rev-parse --show-toplevel`>
+     folder: <basename>   ·   branch: <branch>
+   Then type: resume
 
 Saved to disk (survives /clear):
   • STATUS.md   — <one-line summary of the state you wrote>
@@ -80,7 +98,8 @@ Committed:      <short sha + message | not committed (why)>
 Memory:         <claude-mem observations captured | no memory plugin — files are your record>
 Uncommitted WIP: <one-line summary | none>
 
-Next session: open a fresh chat and say "resume" — STATUS.md picks you up from exactly here.
+Next session: open a fresh chat IN THE FOLDER NAMED ABOVE and say "resume".
+                 A chat opened anywhere else will not see this stream's work.
 
 ✅ Safe to clear. (I can't press /clear for you — that part's yours.)
 ```
