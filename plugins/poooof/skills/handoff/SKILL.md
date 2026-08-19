@@ -78,6 +78,18 @@ git rev-parse --abbrev-ref HEAD    # the branch it is on
 Print the **absolute path**, not "the same folder" — they are choosing from a macOS folder dialog
 where every stream looks identical, and a relative hint is useless there.
 
+**Then compose the exact resume phrase, and never emit a bare "resume".** A bare word only works when
+exactly one chat lives in that folder. `main/` routinely holds several at once — a design thread, a
+review, an infrastructure pass — and they all read the same `STATUS.md`. Emit
+`resume <2-5 word topic>` naming THIS thread's work (e.g. `resume the client self-booking design`),
+plus **the one file that holds its state** — the stream doc, the plan under `docs/plans/`, or
+`STATUS.md` when the session really is the whole product picture.
+
+**Related trap when several threads share `main/`:** step 3 says `STATUS.md` is overwritten, and that
+is right for one thread. If another session has written its own state there, do NOT overwrite it —
+add a section alongside and say so in the report. Better still, keep this thread's state in its own
+named doc and leave `STATUS.md` for the product picture.
+
 ### 7. Report and give the green light
 Print exactly this shape, filled in with what you really did:
 
@@ -87,7 +99,8 @@ Print exactly this shape, filled in with what you really did:
 📂 OPEN THE NEXT CHAT IN THIS FOLDER:
      <absolute path from `git rev-parse --show-toplevel`>
      folder: <basename>   ·   branch: <branch>
-   Then type: resume
+   Then type:  resume <2-5 word topic naming THIS thread>
+   State file: <the doc that holds it — stream doc, plan, or STATUS.md>
 
 Saved to disk (survives /clear):
   • STATUS.md   — <one-line summary of the state you wrote>
@@ -98,8 +111,9 @@ Committed:      <short sha + message | not committed (why)>
 Memory:         <claude-mem observations captured | no memory plugin — files are your record>
 Uncommitted WIP: <one-line summary | none>
 
-Next session: open a fresh chat IN THE FOLDER NAMED ABOVE and say "resume".
-                 A chat opened anywhere else will not see this stream's work.
+Next session: open a fresh chat IN THE FOLDER NAMED ABOVE and use the exact phrase
+                 above — not a bare "resume", which is ambiguous when more than one
+                 chat shares a folder. A chat opened elsewhere will not see this work.
 
 ✅ Safe to clear. (I can't press /clear for you — that part's yours.)
 ```
