@@ -101,7 +101,17 @@ function straysAtRoot(root, gitCwd) {
 //
 // Printed on EVERY session, in sync or not, because "where am I" is not an error condition. It also
 // surfaces a folder/branch mismatch immediately, before work happens rather than after.
-function locationLine(cwd) {
+function locationLine(cwd, root) {
+  // 🔴 The bare ROOT is not a worktree. A chat opened there sees `.bare/` and the stream folders
+  // sitting next to each other, edits land outside any branch, and the project's own CLAUDE.md says
+  // "you opened one level too high". It is also the DEFAULT the desktop app lands on, so it happens
+  // constantly. This was silent until 1.7.8 — the one place the line was needed most printed nothing,
+  // because `rev-parse --show-toplevel` gives no usable worktree there.
+  try {
+    if (root && fs.realpathSync(cwd) === fs.realpathSync(root)) {
+      return '📍 ⚠️ You are at the project ROOT, not a worktree — open this chat in `main/` or a stream folder instead.';
+    }
+  } catch (e) { /* fall through to the normal path */ }
   const top = git(['rev-parse', '--show-toplevel'], cwd);
   if (top.code !== 0 || !top.out) return null;
   const folder = path.basename(top.out);
@@ -370,7 +380,7 @@ function main() {
     );
   }
 
-  const loc = locationLine(process.cwd());
+  const loc = locationLine(process.cwd(), root);
 
   if (!findings.length) {
     // In sync: still say where we are, and nothing else.
